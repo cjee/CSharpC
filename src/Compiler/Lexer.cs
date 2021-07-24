@@ -50,6 +50,9 @@ namespace Compiler
                 case ' ': case '\t' : case '\r': case '\n' :
                     ReadWhitespace();
                     break;
+                default:
+                    position++;
+                    break;
             }
             
             
@@ -77,7 +80,7 @@ namespace Compiler
             if (!int.TryParse(text, out var intValue))
                 throw new Exception("Can't convert int");
             value = intValue;
-            kind = SyntaxKind.NumberToken;
+            kind = SyntaxKind.IntegerLiteralToken;
         }
 
         private char Current => Peak(0);
