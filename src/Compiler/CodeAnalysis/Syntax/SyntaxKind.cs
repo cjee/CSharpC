@@ -16,5 +16,6 @@ namespace Compiler.CodeAnalysis.Syntax
         BinaryExpression,
         NumericLiteralExpression,
         ParenthesizedExpression,
+        UnaryOperator,
     }
 }
