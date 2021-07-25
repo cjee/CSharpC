@@ -13,9 +13,9 @@ namespace Compiler.CodeAnalysis.Syntax
         OpenParenthesis,
         CloseParenthesis,
 
-        BinaryExpression,
         NumericLiteralExpression,
+        UnaryExpression,
+        BinaryExpression,
         ParenthesizedExpression,
-        UnaryOperator,
     }
 }

@@ -12,7 +12,7 @@ namespace Compiler.CodeAnalysis.Syntax
 
         public SyntaxToken OperatorToken { get; }
         public ExpressionsSyntax Operand { get; }
-        public override SyntaxKind Kind => SyntaxKind.UnaryOperator;
+        public override SyntaxKind Kind => SyntaxKind.UnaryExpression;
 
         public override IEnumerable<SyntaxNode> GetChildren()
         {
