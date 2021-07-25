@@ -1,4 +1,4 @@
-namespace Compiler
+namespace Compiler.CodeAnalysis.Syntax
 {
     public static class SyntaxFacts
     {
@@ -10,7 +10,7 @@ namespace Compiler
                 SyntaxKind.MinusToken => "-",
                 SyntaxKind.StarToken => "*",
                 SyntaxKind.SlashToken => "/",
-                _ => null
+                _ => string.Empty,
             };
         }
     }
