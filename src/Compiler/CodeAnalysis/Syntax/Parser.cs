@@ -59,16 +59,20 @@ namespace Compiler.CodeAnalysis.Syntax
             return new SyntaxTree(Diagnostics, expression, endOfFileToken);
         }
 
-        private ExpressionsSyntax ParseExpression()
+        private ExpressionsSyntax ParseExpression(int parentPrecedence = 0)
         {
             var left = ParsePrimaryExpression();
-            while (Current.Kind is SyntaxKind.PlusToken or SyntaxKind.MinusToken)
+            while (true)
             {
+                var precedence = SyntaxFacts.GetBinaryOperatorPrecedence(Current.Kind);
+                if (precedence == 0 || precedence <= parentPrecedence)
+                    break;
+                
+                
                 var operatorToken = NextToken();
-                var right = ParsePrimaryExpression();
+                var right = ParseExpression(precedence);
                 left = new BinaryExpressionSyntax(left, operatorToken, right);
             }
-
             return left;
         }
 

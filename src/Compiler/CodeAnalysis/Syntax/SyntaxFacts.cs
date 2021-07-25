@@ -13,5 +13,20 @@ namespace Compiler.CodeAnalysis.Syntax
                 _ => string.Empty,
             };
         }
+        
+        public static int GetBinaryOperatorPrecedence(SyntaxKind currentKind)
+        {
+            switch (currentKind)
+            {
+                case SyntaxKind.StarToken:
+                case SyntaxKind.SlashToken:
+                    return 2;
+                case SyntaxKind.PlusToken:
+                case SyntaxKind.MinusToken:
+                    return 1;
+                default:
+                    return 0;
+            }
+        }
     }
 }
