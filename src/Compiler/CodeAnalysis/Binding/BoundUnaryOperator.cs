@@ -33,6 +33,8 @@ namespace Compiler.CodeAnalysis.Binding
         {
             new BoundUnaryOperator(SyntaxKind.PlusToken, BoundUnaryOperatorKind.Identity, TypeSymbol.Int),
             new BoundUnaryOperator(SyntaxKind.MinusToken, BoundUnaryOperatorKind.Negation, TypeSymbol.Int),
+            
+            new BoundUnaryOperator(SyntaxKind.BangToken, BoundUnaryOperatorKind.LogicalNegation, TypeSymbol.Boolean),
         };
 
         public static BoundUnaryOperator? Bind(SyntaxKind operandKind, TypeSymbol boundOperandType)

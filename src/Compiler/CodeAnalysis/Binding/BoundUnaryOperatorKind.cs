@@ -4,5 +4,6 @@ namespace Compiler.CodeAnalysis.Binding
     {
         Identity,
         Negation,
+        LogicalNegation,
     }
 }

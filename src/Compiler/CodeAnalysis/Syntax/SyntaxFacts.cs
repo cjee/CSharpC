@@ -10,6 +10,15 @@ namespace Compiler.CodeAnalysis.Syntax
                 SyntaxKind.MinusToken => "-",
                 SyntaxKind.StarToken => "*",
                 SyntaxKind.SlashToken => "/",
+                SyntaxKind.PercentToken => "%",
+                SyntaxKind.BangToken => "!",
+                SyntaxKind.LessToken => "<",
+                SyntaxKind.LessOrEqualToken => "<=",
+                SyntaxKind.GreaterToken => ">",
+                SyntaxKind.GreaterOrEqualToken => ">=",
+                SyntaxKind.BangEqualsToken => "!=",
+                SyntaxKind.EqualsEqualsToken => "==",
+                SyntaxKind.EqualsToken => "=",
                 SyntaxKind.OpenParenthesis => "(",
                 SyntaxKind.CloseParenthesis => ")",
                 _ => string.Empty,
@@ -32,6 +41,7 @@ namespace Compiler.CodeAnalysis.Syntax
             {
                 case SyntaxKind.PlusToken:
                 case SyntaxKind.MinusToken:
+                case SyntaxKind.BangToken:
                     return 13; //Based on C# operator count
                 default:
                     return 0;
@@ -44,10 +54,21 @@ namespace Compiler.CodeAnalysis.Syntax
             {
                 case SyntaxKind.StarToken:
                 case SyntaxKind.SlashToken:
+                case SyntaxKind.PercentToken:
                     return 12;
                 case SyntaxKind.PlusToken:
                 case SyntaxKind.MinusToken:
                     return 11;
+                case SyntaxKind.LessToken:
+                case SyntaxKind.LessOrEqualToken:
+                case SyntaxKind.GreaterToken:
+                case SyntaxKind.GreaterOrEqualToken:
+                    return 9;
+                case SyntaxKind.BangEqualsToken:
+                case SyntaxKind.EqualsEqualsToken:
+                    return 8;
+                case  SyntaxKind.EqualsToken:
+                    return 1;
                 default:
                     return 0;
             }

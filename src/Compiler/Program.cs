@@ -36,7 +36,10 @@ namespace Compiler
                 if (diagnostics.Any())
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    foreach (var value in result.Diagnostics) Console.WriteLine($"pos: {value.Location.Start}: {value}");
+                    foreach (var value in diagnostics)
+                    {
+                        Console.WriteLine($"pos: {value.Location.Start}: {value}");
+                    }
                     Console.ResetColor();
                 }
             }

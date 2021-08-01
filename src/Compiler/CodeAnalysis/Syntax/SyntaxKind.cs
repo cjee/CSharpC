@@ -6,10 +6,25 @@ namespace Compiler.CodeAnalysis.Syntax
         EndOfFileToken,
         WhitespaceToken,
         IntegerLiteralToken,
+        
         PlusToken,
         MinusToken,
         StarToken,
         SlashToken,
+        PercentToken,
+        
+        BangToken,
+        
+        LessToken,
+        LessOrEqualToken,
+        GreaterToken,
+        GreaterOrEqualToken,
+        
+        BangEqualsToken,
+        EqualsEqualsToken,
+        
+        EqualsToken,
+        
         OpenParenthesis,
         CloseParenthesis,
 
@@ -22,6 +37,5 @@ namespace Compiler.CodeAnalysis.Syntax
         UnaryExpression,
         BinaryExpression,
         ParenthesizedExpression,
-        
     }
 }

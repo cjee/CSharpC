@@ -47,6 +47,58 @@ namespace Compiler.CodeAnalysis.Syntax
                     kind = SyntaxKind.SlashToken;
                     position++;
                     break;
+                case '%':
+                    kind = SyntaxKind.PercentToken;
+                    position++;
+                    break;
+                case '!':
+                    position++;
+                    if (Current != '=')
+                    {
+                        kind = SyntaxKind.BangToken;
+                    }
+                    else
+                    {
+                        kind = SyntaxKind.BangEqualsToken;
+                        position++;
+                    }
+                    break;
+                case '<':
+                    position++;
+                    if (Current != '=')
+                    {
+                        kind = SyntaxKind.LessToken;
+                    }
+                    else
+                    {
+                        position++;
+                        kind = SyntaxKind.LessOrEqualToken;
+                    }
+                    break;
+                case '>':
+                    position++;
+                    if (Current != '=')
+                    {
+                        kind = SyntaxKind.GreaterToken;
+                    }
+                    else
+                    {
+                        position++;
+                        kind = SyntaxKind.GreaterOrEqualToken;
+                    }
+                    break;
+                case '=':
+                    position++;
+                    if (Current != '=')
+                    {
+                        kind = SyntaxKind.EqualsToken;
+                    }
+                    else
+                    {
+                        kind = SyntaxKind.EqualsEqualsToken;
+                        position++;
+                    }
+                    break;
                 case '(':
                     kind = SyntaxKind.OpenParenthesis;
                     position++;

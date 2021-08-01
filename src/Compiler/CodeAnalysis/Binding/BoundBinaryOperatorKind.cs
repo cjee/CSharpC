@@ -6,5 +6,13 @@ namespace Compiler.CodeAnalysis.Binding
         Subtraction,
         Multiplication,
         Division,
+        Modulus,
+        
+        Equals,
+        NotEquals,
+        Less,
+        LessOrEquals,
+        Greater,
+        GreaterOrEquals
     }
 }
