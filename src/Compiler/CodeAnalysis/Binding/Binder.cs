@@ -6,9 +6,9 @@ namespace Compiler.CodeAnalysis.Binding
 {
     public class Binder
     {
-        private List<string> diagnostics = new();
+        private DiagnosticBag diagnostics = new();
 
-        public IEnumerable<string> Diagnostics => diagnostics;
+        public DiagnosticBag Diagnostics => diagnostics;
 
         public BoundExpression BindExpression(ExpressionsSyntax expressionsSyntax)
         {
@@ -36,6 +36,8 @@ namespace Compiler.CodeAnalysis.Binding
             var boundOperator = BoundBinaryOperator.Bind(expressionsSyntax.OperatorToken.Kind, boundLeft.Type, boundRight.Type);
             if (boundOperator == null)
             {
+                diagnostics.ReportUndefinedBinaryOperator(expressionsSyntax.OperatorToken, boundLeft.Type,
+                    boundRight.Type);
                 return boundLeft;
             }
 
@@ -54,6 +56,7 @@ namespace Compiler.CodeAnalysis.Binding
             var boundOperator = BoundUnaryOperator.Bind(expressionsSyntax.OperatorToken.Kind, boundOperand.Type);
             if (boundOperator == null)
             {
+                diagnostics.ReportUndefinedUnaryOperator(expressionsSyntax.OperatorToken, boundOperand.Type);
                 return boundOperand;
             }
             return new BoundUnaryExpression(boundOperator, boundOperand);
@@ -64,7 +67,8 @@ namespace Compiler.CodeAnalysis.Binding
             if (int.TryParse(numericLiteralExpressionSyntax.NumberToken.Text, out var value))
             {
                 return new BoundIntegralLiteralExpression(value);
-            } 
+            }
+
             return new BoundIntegralLiteralExpression(0);
         }
     }

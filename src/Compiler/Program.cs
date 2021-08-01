@@ -1,8 +1,10 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Linq;
+using Compiler.CodeAnalysis;
 using Compiler.CodeAnalysis.Binding;
 using Compiler.CodeAnalysis.Syntax;
+using Compiler.CodeAnalysis.Text;
 
 namespace Compiler
 {
@@ -19,19 +21,22 @@ namespace Compiler
                 if (string.IsNullOrEmpty(input))
                     break;
 
+                var diagnostics = new DiagnosticBag();
                 var result = SyntaxTree.Parse(input);
+                diagnostics.AddRange(result.Diagnostics);
+                
                 var binder = new Binder();
                 var boundTree = binder.BindExpression(result.Root);
-                
+                diagnostics.AddRange(binder.Diagnostics);
                 
                 PrintSyntaxTreeNode(result.Root);
                 boundTree.WriteTo(Console.Out);
                 Console.WriteLine();
                 
-                if (result.Diagnostics.Any())
+                if (diagnostics.Any())
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    foreach (var value in result.Diagnostics) Console.WriteLine(value);
+                    foreach (var value in result.Diagnostics) Console.WriteLine($"pos: {value.Location.Start}: {value}");
                     Console.ResetColor();
                 }
             }

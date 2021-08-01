@@ -4,7 +4,7 @@ namespace Compiler.CodeAnalysis.Syntax
 {
     internal sealed class Lexer
     {
-        private readonly List<string> diagnostics = new();
+        private readonly DiagnosticBag  diagnostics= new();
         private readonly string source;
         private SyntaxKind kind;
 
@@ -18,7 +18,7 @@ namespace Compiler.CodeAnalysis.Syntax
         }
 
         private char Current => Peak(0);
-        public IEnumerable<string> Diagnostics => diagnostics;
+        public DiagnosticBag Diagnostics => diagnostics;
 
         public SyntaxToken Lex()
         {
@@ -74,7 +74,7 @@ namespace Compiler.CodeAnalysis.Syntax
                     ReadWhitespace();
                     break;
                 default:
-                    diagnostics.Add($"Bad character at {position}: '{Current}'");
+                    diagnostics.ReportBadCharacter(position, Current);
                     position++;
                     break;
             }
@@ -105,7 +105,7 @@ namespace Compiler.CodeAnalysis.Syntax
             if (!int.TryParse(text, out var intValue))
             {
                 value = null;
-                diagnostics.Add("Integral constant is not a valid number.");
+                diagnostics.ReportBadIntegral(start, length);
             }
 
             value = intValue;
