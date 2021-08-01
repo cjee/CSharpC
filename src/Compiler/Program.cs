@@ -1,5 +1,7 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Linq;
+using Compiler.CodeAnalysis.Binding;
 using Compiler.CodeAnalysis.Syntax;
 
 namespace Compiler
@@ -18,7 +20,14 @@ namespace Compiler
                     break;
 
                 var result = SyntaxTree.Parse(input);
+                var binder = new Binder();
+                var boundTree = binder.BindExpression(result.Root);
+                
+                
                 PrintSyntaxTreeNode(result.Root);
+                boundTree.WriteTo(Console.Out);
+                Console.WriteLine();
+                
                 if (result.Diagnostics.Any())
                 {
                     Console.ForegroundColor = ConsoleColor.Red;

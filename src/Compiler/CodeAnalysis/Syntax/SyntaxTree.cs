@@ -4,7 +4,7 @@ namespace Compiler.CodeAnalysis.Syntax
 {
     public class SyntaxTree
     {
-        public SyntaxTree(IEnumerable<string> diagnostics, SyntaxNode root, SyntaxToken endOfFileToken)
+        public SyntaxTree(IEnumerable<string> diagnostics, ExpressionsSyntax root, SyntaxToken endOfFileToken)
         {
             Diagnostics = diagnostics;
             Root = root;
@@ -12,7 +12,7 @@ namespace Compiler.CodeAnalysis.Syntax
         }
 
         public IEnumerable<string> Diagnostics { get; }
-        public SyntaxNode Root { get; }
+        public ExpressionsSyntax Root { get; }
         public SyntaxToken EndOfFileToken { get; }
 
         public static SyntaxTree Parse(string text)

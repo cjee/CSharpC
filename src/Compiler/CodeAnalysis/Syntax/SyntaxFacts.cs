@@ -10,6 +10,8 @@ namespace Compiler.CodeAnalysis.Syntax
                 SyntaxKind.MinusToken => "-",
                 SyntaxKind.StarToken => "*",
                 SyntaxKind.SlashToken => "/",
+                SyntaxKind.OpenParenthesis => "(",
+                SyntaxKind.CloseParenthesis => ")",
                 _ => string.Empty,
             };
         }
