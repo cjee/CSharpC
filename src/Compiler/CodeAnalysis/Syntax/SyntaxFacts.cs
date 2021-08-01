@@ -15,6 +15,16 @@ namespace Compiler.CodeAnalysis.Syntax
                 _ => string.Empty,
             };
         }
+
+        public static SyntaxKind GetKeywordToken(string text)
+        {
+            return text switch
+            {
+                "true" => SyntaxKind.TrueKeyword,
+                "false" => SyntaxKind.FalseKeyword,
+                _ => SyntaxKind.BadToken,
+            };
+        }
         
         public static int GetUnaryOperatorPrecedence(this SyntaxKind currentKind)
         {

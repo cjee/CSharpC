@@ -28,6 +28,9 @@ namespace Compiler.CodeAnalysis.Binding
                 case BoundNodeKind.IntegralLiteralExpression:
                     writer.WriteIntegralLiteralExpression((BoundIntegralLiteralExpression) node);
                     break;
+                case BoundNodeKind.BooleanLiteralExpression:
+                    writer.WriteBooleanLiteralExpression((BoundBooleanLiteralExpression) node);
+                    break;
                 default:
                     throw new Exception($"Unrecognized bound node kind: {node.Kind}");
             }
@@ -56,6 +59,12 @@ namespace Compiler.CodeAnalysis.Binding
             BoundIntegralLiteralExpression node)
         {
             writer.Write(node.Value);
+        }
+        
+        private static void WriteBooleanLiteralExpression(this IndentedTextWriter writer,
+            BoundBooleanLiteralExpression node)
+        {
+            writer.Write(node.Value ? "true" : "false");
         }
 
         private static void WriteNestedExpression(this IndentedTextWriter writer, BoundExpression expression,

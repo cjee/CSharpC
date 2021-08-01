@@ -74,8 +74,13 @@ namespace Compiler.CodeAnalysis.Syntax
                     ReadWhitespace();
                     break;
                 default:
-                    diagnostics.ReportBadCharacter(position, Current);
-                    position++;
+                    if (char.IsLetter(Current))
+                        ReadKeyword();
+                    else
+                    {
+                        diagnostics.ReportBadCharacter(position, Current);
+                        position++;
+                    }
                     break;
             }
 
@@ -85,6 +90,27 @@ namespace Compiler.CodeAnalysis.Syntax
                 text = source.Substring(start, length);
 
             return new SyntaxToken(kind, start, text, value);
+        }
+
+        private void ReadKeyword()
+        {
+            while (char.IsLetter(Current))
+                position++;
+
+            var length = position - start;
+            var text = source.Substring(start, length);
+
+            kind = SyntaxFacts.GetKeywordToken(text);
+            value = kind switch
+            {
+                SyntaxKind.TrueKeyword => true,
+                SyntaxKind.FalseKeyword => false,
+                _ => null,
+            };
+
+            if (kind is SyntaxKind.BadToken)
+                diagnostics.ReportBadToken(start, length, text);
+
         }
 
         private void ReadWhitespace()

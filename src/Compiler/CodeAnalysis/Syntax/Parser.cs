@@ -105,6 +105,9 @@ namespace Compiler.CodeAnalysis.Syntax
                 return new ParenthesizedExpressionSyntax(open, expression, close);
             }
 
+            if(Current.Kind is SyntaxKind.FalseKeyword or SyntaxKind.TrueKeyword)
+                return new BooleanLiteralExpressionSyntax(NextToken());
+            
             return new NumericLiteralExpressionSyntax(MatchToken(SyntaxKind.IntegerLiteralToken));
         }
     }

@@ -14,11 +14,20 @@ namespace Compiler.CodeAnalysis
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public void AddRange(DiagnosticBag bag) => diagnostics.AddRange(bag.diagnostics);
-
+        
+        private void Report(TextSpan span, string message) => diagnostics.Add(new Diagnostic(span, message));
+        
         public void ReportBadCharacter(int position, char current)
         {
             var span = new TextSpan(position, 1);
             var message = $"Unexpected character '{current}'";
+            Report(span, message);
+        }
+        
+        public void ReportBadToken(int start, int length, string text)
+        {
+            var span = new TextSpan(start, length);
+            var message = $"Unrecognized keyword: {text}";
             Report(span, message);
         }
 
@@ -28,16 +37,15 @@ namespace Compiler.CodeAnalysis
             var message = "Integral constant is too large";
             Report(span, message);
         }
-        
+
         public void ReportUnexpectedToken(TextSpan span, SyntaxKind currentKind, SyntaxKind expected)
         {
             var message = $"Unexpected token <{currentKind}>, expected <{expected}>";
             Report(span, message);
         }
-        
-        private void Report(TextSpan span, string message) => diagnostics.Add(new Diagnostic(span, message));
 
-        public void ReportUndefinedBinaryOperator(SyntaxToken operatorToken, TypeSymbol boundLeftType, TypeSymbol boundRightType)
+        public void ReportUndefinedBinaryOperator(SyntaxToken operatorToken, TypeSymbol boundLeftType,
+            TypeSymbol boundRightType)
         {
             var message =
                 $"Binary operator '{SyntaxFacts.GetText(operatorToken.Kind)}' is not defined for type '{boundLeftType.Name}' and '{boundRightType.Name}'";

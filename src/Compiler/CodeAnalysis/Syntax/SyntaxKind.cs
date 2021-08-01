@@ -13,9 +13,15 @@ namespace Compiler.CodeAnalysis.Syntax
         OpenParenthesis,
         CloseParenthesis,
 
+        //Keyworkds
+        FalseKeyword,
+        TrueKeyword,
+
         NumericLiteralExpression,
+        BooleanLiteralExpression,
         UnaryExpression,
         BinaryExpression,
         ParenthesizedExpression,
+        
     }
 }

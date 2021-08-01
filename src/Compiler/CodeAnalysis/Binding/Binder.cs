@@ -17,6 +17,8 @@ namespace Compiler.CodeAnalysis.Binding
             {
                 case SyntaxKind.NumericLiteralExpression:
                     return BindNumericLiteralExpression((NumericLiteralExpressionSyntax)expressionsSyntax);
+                case SyntaxKind.BooleanLiteralExpression:
+                    return BindBooleanLiteralExpression((BooleanLiteralExpressionSyntax) expressionsSyntax);
                 case SyntaxKind.UnaryExpression:
                     return BindUnaryExpression((UnaryExpressionSyntax)expressionsSyntax);
                 case SyntaxKind.BinaryExpression:
@@ -70,6 +72,12 @@ namespace Compiler.CodeAnalysis.Binding
             }
 
             return new BoundIntegralLiteralExpression(0);
+        }
+        
+        private BoundExpression BindBooleanLiteralExpression(BooleanLiteralExpressionSyntax expressionsSyntax)
+        {
+            bool value = expressionsSyntax.BooleanToken.Kind == SyntaxKind.TrueKeyword;
+            return new BoundBooleanLiteralExpression(value);
         }
     }
 }
