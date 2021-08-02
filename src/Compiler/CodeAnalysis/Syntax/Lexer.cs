@@ -100,23 +100,23 @@ namespace Compiler.CodeAnalysis.Syntax
                     }
                     break;
                 case '(':
-                    kind = SyntaxKind.OpenParenthesis;
+                    kind = SyntaxKind.OpenParenthesisToken;
                     position++;
                     break;
                 case ')':
-                    kind = SyntaxKind.CloseParenthesis;
+                    kind = SyntaxKind.CloseParenthesisToken;
                     position++;
                     break;
                 case '{':
-                    kind = SyntaxKind.OpenBrace;
+                    kind = SyntaxKind.OpenBraceToken;
                     position++;
                     break;
                 case '}':
-                    kind = SyntaxKind.CloseBrace;
+                    kind = SyntaxKind.CloseBraceToken;
                     position++;
                     break;
                 case ';':
-                    kind = SyntaxKind.Semicolon;
+                    kind = SyntaxKind.SemicolonToken;
                     position++;
                     break;
                 case '0':

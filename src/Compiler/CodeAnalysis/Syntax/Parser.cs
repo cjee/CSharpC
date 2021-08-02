@@ -71,16 +71,16 @@ namespace Compiler.CodeAnalysis.Syntax
 
         private BlockStatement ParseStatementBlock()
         {
-            var openBrace = MatchToken(SyntaxKind.OpenBrace);
+            var openBrace = MatchToken(SyntaxKind.OpenBraceToken);
 
             var statementList = ImmutableList.CreateBuilder<Statement>();
             
-            while (Current.Kind != SyntaxKind.CloseBrace)
+            while (Current.Kind != SyntaxKind.CloseBraceToken)
             {
                 statementList.Add(ParseStatement());
             }
 
-            var closeBrace = MatchToken(SyntaxKind.CloseBrace);
+            var closeBrace = MatchToken(SyntaxKind.CloseBraceToken);
             return new BlockStatement(openBrace, statementList.ToImmutable(), closeBrace);
 
         }
@@ -89,8 +89,8 @@ namespace Compiler.CodeAnalysis.Syntax
         {
             return Current.Kind switch
             {
-                SyntaxKind.OpenBrace => ParseStatementBlock(),
-                SyntaxKind.Semicolon => new EmptyStatement(NextToken()),
+                SyntaxKind.OpenBraceToken => ParseStatementBlock(),
+                SyntaxKind.SemicolonToken => new EmptyStatement(NextToken()),
                 SyntaxKind.IntKeyword or SyntaxKind.BoolKeyword => ParseDeclarationStatement(),
                 _ => throw new NotImplementedException($"Not all statement types are parsable {Current.Kind}"),
             };
@@ -104,11 +104,11 @@ namespace Compiler.CodeAnalysis.Syntax
 
             SyntaxToken identifier = MatchToken(SyntaxKind.Identifier);
 
-            if (Current.Kind != SyntaxKind.Semicolon)
+            if (Current.Kind != SyntaxKind.SemicolonToken)
             {
                 equalsToken = MatchToken(SyntaxKind.EqualsToken);
                 
-                if (Current.Kind == SyntaxKind.Semicolon)
+                if (Current.Kind == SyntaxKind.SemicolonToken)
                 {
                     diagnostics.ReportMissingExpression(Current.TextSpan);
                 }
@@ -116,7 +116,7 @@ namespace Compiler.CodeAnalysis.Syntax
                 expressionsSyntax = ParseExpression();
             }
 
-            SyntaxToken semicolon = MatchToken(SyntaxKind.Semicolon);
+            SyntaxToken semicolon = MatchToken(SyntaxKind.SemicolonToken);
             return new LocalVariableDeclarationStatement(type, identifier, equalsToken, expressionsSyntax, semicolon);
 
         }
@@ -153,11 +153,11 @@ namespace Compiler.CodeAnalysis.Syntax
         {
             switch (Current.Kind)
             {
-                case SyntaxKind.OpenParenthesis:
+                case SyntaxKind.OpenParenthesisToken:
                 {
                     var open = NextToken();
                     var expression = ParseExpression();
-                    var close = MatchToken(SyntaxKind.CloseParenthesis);
+                    var close = MatchToken(SyntaxKind.CloseParenthesisToken);
                     return new ParenthesizedExpressionSyntax(open, expression, close);
                 }
                 case SyntaxKind.FalseKeyword or SyntaxKind.TrueKeyword:

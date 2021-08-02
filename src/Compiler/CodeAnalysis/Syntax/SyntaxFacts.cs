@@ -19,11 +19,11 @@ namespace Compiler.CodeAnalysis.Syntax
                 SyntaxKind.BangEqualsToken => "!=",
                 SyntaxKind.EqualsEqualsToken => "==",
                 SyntaxKind.EqualsToken => "=",
-                SyntaxKind.OpenParenthesis => "(",
-                SyntaxKind.CloseParenthesis => ")",
-                SyntaxKind.OpenBrace => "{",
-                SyntaxKind.CloseBrace => "}",
-                SyntaxKind.Semicolon => ";",
+                SyntaxKind.OpenParenthesisToken => "(",
+                SyntaxKind.CloseParenthesisToken => ")",
+                SyntaxKind.OpenBraceToken => "{",
+                SyntaxKind.CloseBraceToken => "}",
+                SyntaxKind.SemicolonToken => ";",
                 _ => string.Empty,
             };
         }

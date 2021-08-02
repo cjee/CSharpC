@@ -25,11 +25,11 @@ namespace Compiler.CodeAnalysis.Syntax
         
         EqualsToken,
         
-        OpenParenthesis,
-        CloseParenthesis,
-        OpenBrace,
-        CloseBrace,
-        Semicolon,
+        OpenParenthesisToken,
+        CloseParenthesisToken,
+        OpenBraceToken,
+        CloseBraceToken,
+        SemicolonToken,
 
         // Keyworkds
         FalseKeyword,

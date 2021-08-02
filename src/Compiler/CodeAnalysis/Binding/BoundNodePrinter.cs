@@ -91,11 +91,11 @@ namespace Compiler.CodeAnalysis.Binding
         {
             var needParenthesis = parentPrecedence >= currentPrecedence;
             if (needParenthesis)
-                writer.WritePunctuation(SyntaxKind.OpenParenthesis);
+                writer.WritePunctuation(SyntaxKind.OpenParenthesisToken);
 
             expression.WriteTo(writer);
             if (needParenthesis)
-                writer.WritePunctuation(SyntaxKind.CloseParenthesis);
+                writer.WritePunctuation(SyntaxKind.CloseParenthesisToken);
         }
 
         private static void WritePunctuation(this IndentedTextWriter writer, SyntaxKind kind)
