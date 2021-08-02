@@ -91,8 +91,34 @@ namespace Compiler.CodeAnalysis.Syntax
             {
                 SyntaxKind.OpenBrace => ParseStatementBlock(),
                 SyntaxKind.Semicolon => new EmptyStatement(NextToken()),
-                _ => throw new NotImplementedException("Not all statement types are parsable"),
+                SyntaxKind.IntKeyword or SyntaxKind.BoolKeyword => ParseDeclarationStatement(),
+                _ => throw new NotImplementedException($"Not all statement types are parsable {Current.Kind}"),
             };
+        }
+
+        private Statement ParseDeclarationStatement()
+        {
+            SyntaxToken type = NextToken();
+            SyntaxToken? equalsToken = null;
+            ExpressionsSyntax? expressionsSyntax = null;
+
+            SyntaxToken identifier = MatchToken(SyntaxKind.Identifier);
+
+            if (Current.Kind != SyntaxKind.Semicolon)
+            {
+                equalsToken = MatchToken(SyntaxKind.EqualsToken);
+                
+                if (Current.Kind == SyntaxKind.Semicolon)
+                {
+                    diagnostics.ReportMissingExpression(Current.TextSpan);
+                }
+
+                expressionsSyntax = ParseExpression();
+            }
+
+            SyntaxToken semicolon = MatchToken(SyntaxKind.Semicolon);
+            return new LocalVariableDeclarationStatement(type, identifier, equalsToken, expressionsSyntax, semicolon);
+
         }
 
         private ExpressionsSyntax ParseExpression(int parentPrecedence = 0)
@@ -125,18 +151,22 @@ namespace Compiler.CodeAnalysis.Syntax
 
         private ExpressionsSyntax ParsePrimaryExpression()
         {
-            if (Current.Kind is SyntaxKind.OpenParenthesis)
+            switch (Current.Kind)
             {
-                var open = NextToken();
-                var expression = ParseExpression();
-                var close = MatchToken(SyntaxKind.CloseParenthesis);
-                return new ParenthesizedExpressionSyntax(open, expression, close);
+                case SyntaxKind.OpenParenthesis:
+                {
+                    var open = NextToken();
+                    var expression = ParseExpression();
+                    var close = MatchToken(SyntaxKind.CloseParenthesis);
+                    return new ParenthesizedExpressionSyntax(open, expression, close);
+                }
+                case SyntaxKind.FalseKeyword or SyntaxKind.TrueKeyword:
+                    return new BooleanLiteralExpressionSyntax(NextToken());
+                case SyntaxKind.IntegerLiteralToken:
+                    return new NumericLiteralExpressionSyntax(NextToken());
+                default:
+                    return new EmptyExpressionSyntax();
             }
-
-            if(Current.Kind is SyntaxKind.FalseKeyword or SyntaxKind.TrueKeyword)
-                return new BooleanLiteralExpressionSyntax(NextToken());
-            
-            return new NumericLiteralExpressionSyntax(MatchToken(SyntaxKind.IntegerLiteralToken));
         }
     }
 }

@@ -58,5 +58,17 @@ namespace Compiler.CodeAnalysis
                 $"Unary operator '{SyntaxFacts.GetText(operatorToken.Kind)}' is not defined for type '{boundOperandType.Name}'";
             Report(operatorToken.TextSpan, message);
         }
+
+        public void ReportIdentifierExpected(TextSpan span)
+        {
+            var message = "Identifier expected.";
+            Report(span, message);
+        }
+
+        public void ReportMissingExpression(TextSpan span)
+        {
+            var message = "Expected an expression";
+            Report(span, message);
+        }
     }
 }

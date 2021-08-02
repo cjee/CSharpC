@@ -31,7 +31,7 @@ namespace Compiler.CodeAnalysis.Syntax
         CloseBrace,
         Semicolon,
 
-        //Keyworkds
+        // Keyworkds
         FalseKeyword,
         TrueKeyword,
         
@@ -43,12 +43,15 @@ namespace Compiler.CodeAnalysis.Syntax
         
         Identifier,
         
+        // Expressions
+        EmptyExpression,
         UnaryExpression,
         BinaryExpression,
         ParenthesizedExpression,
 
-        //Statements
+        // Statements
         BlockStatement,
         EmptyStatement,
+        LocalVariableDeclarationStatement,
     }
 }
