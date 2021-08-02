@@ -27,15 +27,28 @@ namespace Compiler.CodeAnalysis.Syntax
         
         OpenParenthesis,
         CloseParenthesis,
+        OpenBrace,
+        CloseBrace,
+        Semicolon,
 
         //Keyworkds
         FalseKeyword,
         TrueKeyword,
+        
+        BoolKeyword,
+        IntKeyword,
 
         NumericLiteralExpression,
         BooleanLiteralExpression,
+        
+        Identifier,
+        
         UnaryExpression,
         BinaryExpression,
         ParenthesizedExpression,
+
+        //Statements
+        BlockStatement,
+        EmptyStatement,
     }
 }

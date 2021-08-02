@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Linq;
+using System.Text;
 using Compiler.CodeAnalysis;
 using Compiler.CodeAnalysis.Binding;
 using Compiler.CodeAnalysis.Syntax;
@@ -13,6 +14,9 @@ namespace Compiler
         private static void Main()
         {
             Console.WriteLine($"CSharpC Compiler v{typeof(Program).Assembly.GetName().Version}");
+
+            var textBuilder = new StringBuilder();
+            
             while (true)
             {
                 Console.Write(">");
@@ -21,16 +25,22 @@ namespace Compiler
                 if (string.IsNullOrEmpty(input))
                     break;
 
+                if (input != "#")
+                {
+                    textBuilder.AppendLine(input);
+                    continue;
+                }
+
                 var diagnostics = new DiagnosticBag();
-                var result = SyntaxTree.Parse(input);
+                var result = SyntaxTree.Parse(textBuilder.ToString());
                 diagnostics.AddRange(result.Diagnostics);
                 
                 var binder = new Binder();
-                var boundTree = binder.BindExpression(result.Root);
-                diagnostics.AddRange(binder.Diagnostics);
+               // var boundTree = binder.BindExpression(result.Root);
+               // diagnostics.AddRange(binder.Diagnostics);
                 
                 PrintSyntaxTreeNode(result.Root);
-                boundTree.WriteTo(Console.Out);
+               // boundTree.WriteTo(Console.Out);
                 Console.WriteLine();
                 
                 if (diagnostics.Any())
@@ -42,6 +52,8 @@ namespace Compiler
                     }
                     Console.ResetColor();
                 }
+
+                textBuilder.Clear();
             }
         }
 

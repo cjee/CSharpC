@@ -107,6 +107,18 @@ namespace Compiler.CodeAnalysis.Syntax
                     kind = SyntaxKind.CloseParenthesis;
                     position++;
                     break;
+                case '{':
+                    kind = SyntaxKind.OpenBrace;
+                    position++;
+                    break;
+                case '}':
+                    kind = SyntaxKind.CloseBrace;
+                    position++;
+                    break;
+                case ';':
+                    kind = SyntaxKind.Semicolon;
+                    position++;
+                    break;
                 case '0':
                 case '1':
                 case '2':
@@ -127,7 +139,7 @@ namespace Compiler.CodeAnalysis.Syntax
                     break;
                 default:
                     if (char.IsLetter(Current))
-                        ReadKeyword();
+                        ReadKeywordOrIdentifier();
                     else
                     {
                         diagnostics.ReportBadCharacter(position, Current);
@@ -144,7 +156,7 @@ namespace Compiler.CodeAnalysis.Syntax
             return new SyntaxToken(kind, start, text, value);
         }
 
-        private void ReadKeyword()
+        private void ReadKeywordOrIdentifier()
         {
             while (char.IsLetter(Current))
                 position++;

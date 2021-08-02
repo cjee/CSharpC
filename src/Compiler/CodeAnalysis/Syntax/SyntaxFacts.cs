@@ -21,6 +21,9 @@ namespace Compiler.CodeAnalysis.Syntax
                 SyntaxKind.EqualsToken => "=",
                 SyntaxKind.OpenParenthesis => "(",
                 SyntaxKind.CloseParenthesis => ")",
+                SyntaxKind.OpenBrace => "{",
+                SyntaxKind.CloseBrace => "}",
+                SyntaxKind.Semicolon => ";",
                 _ => string.Empty,
             };
         }
@@ -31,7 +34,9 @@ namespace Compiler.CodeAnalysis.Syntax
             {
                 "true" => SyntaxKind.TrueKeyword,
                 "false" => SyntaxKind.FalseKeyword,
-                _ => SyntaxKind.BadToken,
+                "bool" => SyntaxKind.BoolKeyword,
+                "int" => SyntaxKind.IntKeyword,
+                _ => SyntaxKind.Identifier,
             };
         }
         

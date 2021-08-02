@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
@@ -62,9 +64,35 @@ namespace Compiler.CodeAnalysis.Syntax
 
         public SyntaxTree Parse()
         {
-            var expression = ParseExpression();
+            var statementBlock = ParseStatementBlock();
             var endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
-            return new SyntaxTree(Diagnostics, expression, endOfFileToken);
+            return new SyntaxTree(Diagnostics, statementBlock, endOfFileToken);
+        }
+
+        private BlockStatement ParseStatementBlock()
+        {
+            var openBrace = MatchToken(SyntaxKind.OpenBrace);
+
+            var statementList = ImmutableList.CreateBuilder<Statement>();
+            
+            while (Current.Kind != SyntaxKind.CloseBrace)
+            {
+                statementList.Add(ParseStatement());
+            }
+
+            var closeBrace = MatchToken(SyntaxKind.CloseBrace);
+            return new BlockStatement(openBrace, statementList.ToImmutable(), closeBrace);
+
+        }
+
+        private Statement ParseStatement()
+        {
+            return Current.Kind switch
+            {
+                SyntaxKind.OpenBrace => ParseStatementBlock(),
+                SyntaxKind.Semicolon => new EmptyStatement(NextToken()),
+                _ => throw new NotImplementedException("Not all statement types are parsable"),
+            };
         }
 
         private ExpressionsSyntax ParseExpression(int parentPrecedence = 0)
