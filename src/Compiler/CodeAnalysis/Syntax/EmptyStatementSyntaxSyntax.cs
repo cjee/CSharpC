@@ -2,11 +2,11 @@ using System.Collections.Generic;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public sealed class EmptyStatement : Statement
+    public sealed class EmptyStatementSyntaxSyntax : StatementSyntax
     {
         public SyntaxToken Semicolon { get; }
 
-        public EmptyStatement(SyntaxToken semicolon)
+        public EmptyStatementSyntaxSyntax(SyntaxToken semicolon)
         {
             Semicolon = semicolon;
         }

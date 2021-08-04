@@ -3,13 +3,13 @@ using System.Collections.Immutable;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public sealed class BlockStatement : Statement
+    public sealed class BlockStatementSyntaxSyntax : StatementSyntax
     {
         public SyntaxToken OpenBrace { get; }
-        public ImmutableList<Statement> Statements { get; }
+        public ImmutableList<StatementSyntax> Statements { get; }
         public SyntaxToken CloseBrace { get; }
 
-        public BlockStatement(SyntaxToken openBrace, ImmutableList<Statement> statements, SyntaxToken closeBrace)
+        public BlockStatementSyntaxSyntax(SyntaxToken openBrace, ImmutableList<StatementSyntax> statements, SyntaxToken closeBrace)
         {
             OpenBrace = openBrace;
             Statements = statements;

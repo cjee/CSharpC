@@ -69,11 +69,11 @@ namespace Compiler.CodeAnalysis.Syntax
             return new SyntaxTree(Diagnostics, statementBlock, endOfFileToken);
         }
 
-        private BlockStatement ParseStatementBlock()
+        private BlockStatementSyntaxSyntax ParseStatementBlock()
         {
             var openBrace = MatchToken(SyntaxKind.OpenBraceToken);
 
-            var statementList = ImmutableList.CreateBuilder<Statement>();
+            var statementList = ImmutableList.CreateBuilder<StatementSyntax>();
             
             while (Current.Kind != SyntaxKind.CloseBraceToken && Current.Kind != SyntaxKind.EndOfFileToken)
             {
@@ -81,30 +81,30 @@ namespace Compiler.CodeAnalysis.Syntax
             }
 
             var closeBrace = MatchToken(SyntaxKind.CloseBraceToken);
-            return new BlockStatement(openBrace, statementList.ToImmutable(), closeBrace);
+            return new BlockStatementSyntaxSyntax(openBrace, statementList.ToImmutable(), closeBrace);
 
         }
 
-        private Statement ParseStatement()
+        private StatementSyntax ParseStatement()
         {
             return Current.Kind switch
             {
                 SyntaxKind.OpenBraceToken => ParseStatementBlock(),
-                SyntaxKind.SemicolonToken => new EmptyStatement(NextToken()),
+                SyntaxKind.SemicolonToken => new EmptyStatementSyntaxSyntax(NextToken()),
                 
                 SyntaxKind.IntKeyword or SyntaxKind.BoolKeyword => ParseDeclarationStatement(),
                 _ => ParseExpressionStatement(),
             };
         }
 
-        private Statement ParseExpressionStatement()
+        private StatementSyntax ParseExpressionStatement()
         {
             var expression = ParseExpression();
             var semicolon = MatchToken(SyntaxKind.SemicolonToken);
-            return new ExpressionStatement(expression, semicolon);
+            return new ExpressionStatementSyntaxSyntax(expression, semicolon);
         }
 
-        private Statement ParseDeclarationStatement()
+        private StatementSyntax ParseDeclarationStatement()
         {
             SyntaxToken type = NextToken();
             SyntaxToken? equalsToken = null;
@@ -125,7 +125,7 @@ namespace Compiler.CodeAnalysis.Syntax
             }
 
             SyntaxToken semicolon = MatchToken(SyntaxKind.SemicolonToken);
-            return new LocalVariableDeclarationStatement(type, identifier, equalsToken, expressionsSyntax, semicolon);
+            return new LocalVariableDeclarationStatementSyntaxSyntax(type, identifier, equalsToken, expressionsSyntax, semicolon);
 
         }
 

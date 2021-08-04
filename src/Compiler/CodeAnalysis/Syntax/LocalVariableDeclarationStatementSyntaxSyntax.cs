@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public sealed class  LocalVariableDeclarationStatement : Statement
+    public sealed class  LocalVariableDeclarationStatementSyntaxSyntax : StatementSyntax
     {
         public SyntaxToken Type { get; }
         public SyntaxToken Identifier { get; }
@@ -11,7 +11,7 @@ namespace Compiler.CodeAnalysis.Syntax
         public ExpressionsSyntax? Initializer { get; }
         public SyntaxToken Semicolon { get; }
 
-        public LocalVariableDeclarationStatement(
+        public LocalVariableDeclarationStatementSyntaxSyntax(
             SyntaxToken type,
             SyntaxToken identifier,
             SyntaxToken? equalsToken,

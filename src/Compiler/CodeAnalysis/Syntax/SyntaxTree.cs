@@ -2,7 +2,7 @@ namespace Compiler.CodeAnalysis.Syntax
 {
     public class SyntaxTree
     {
-        public SyntaxTree(DiagnosticBag diagnostics, BlockStatement root, SyntaxToken endOfFileToken)
+        public SyntaxTree(DiagnosticBag diagnostics, BlockStatementSyntaxSyntax root, SyntaxToken endOfFileToken)
         {
             Diagnostics = diagnostics;
             Root = root;
@@ -10,7 +10,7 @@ namespace Compiler.CodeAnalysis.Syntax
         }
 
         public DiagnosticBag Diagnostics { get; }
-        public BlockStatement Root { get; }
+        public BlockStatementSyntaxSyntax Root { get; }
         public SyntaxToken EndOfFileToken { get; }
 
         public static SyntaxTree Parse(string text)
