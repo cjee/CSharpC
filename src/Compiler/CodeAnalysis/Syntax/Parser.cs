@@ -75,7 +75,7 @@ namespace Compiler.CodeAnalysis.Syntax
 
             var statementList = ImmutableList.CreateBuilder<Statement>();
             
-            while (Current.Kind != SyntaxKind.CloseBraceToken)
+            while (Current.Kind != SyntaxKind.CloseBraceToken && Current.Kind != SyntaxKind.EndOfFileToken)
             {
                 statementList.Add(ParseStatement());
             }
@@ -91,9 +91,17 @@ namespace Compiler.CodeAnalysis.Syntax
             {
                 SyntaxKind.OpenBraceToken => ParseStatementBlock(),
                 SyntaxKind.SemicolonToken => new EmptyStatement(NextToken()),
+                
                 SyntaxKind.IntKeyword or SyntaxKind.BoolKeyword => ParseDeclarationStatement(),
-                _ => throw new NotImplementedException($"Not all statement types are parsable {Current.Kind}"),
+                _ => ParseExpressionStatement(),
             };
+        }
+
+        private Statement ParseExpressionStatement()
+        {
+            var expression = ParseExpression();
+            var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+            return new ExpressionStatement(expression, semicolon);
         }
 
         private Statement ParseDeclarationStatement()
@@ -139,7 +147,11 @@ namespace Compiler.CodeAnalysis.Syntax
             while (true)
             {
                 var precedence = Current.Kind.GetBinaryOperatorPrecedence();
-                if (precedence == 0 || precedence <= parentPrecedence)
+                if (precedence == 0 || precedence < parentPrecedence )
+                    break;
+
+                // right associativity 
+                if (precedence == parentPrecedence && Current.Kind != SyntaxKind.EqualsToken)
                     break;
                 
                 var operatorToken = NextToken();
@@ -160,6 +172,8 @@ namespace Compiler.CodeAnalysis.Syntax
                     var close = MatchToken(SyntaxKind.CloseParenthesisToken);
                     return new ParenthesizedExpressionSyntax(open, expression, close);
                 }
+                case SyntaxKind.Identifier:
+                    return new SimpleNameExpressionSyntax(NextToken());
                 case SyntaxKind.FalseKeyword or SyntaxKind.TrueKeyword:
                     return new BooleanLiteralExpressionSyntax(NextToken());
                 case SyntaxKind.IntegerLiteralToken:

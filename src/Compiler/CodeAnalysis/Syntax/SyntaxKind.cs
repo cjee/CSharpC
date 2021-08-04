@@ -38,13 +38,13 @@ namespace Compiler.CodeAnalysis.Syntax
         BoolKeyword,
         IntKeyword,
 
-        NumericLiteralExpression,
-        BooleanLiteralExpression,
-        
         Identifier,
         
         // Expressions
         EmptyExpression,
+        NumericLiteralExpression,
+        BooleanLiteralExpression,
+        SimpleNameExpression,
         UnaryExpression,
         BinaryExpression,
         ParenthesizedExpression,
@@ -53,5 +53,6 @@ namespace Compiler.CodeAnalysis.Syntax
         BlockStatement,
         EmptyStatement,
         LocalVariableDeclarationStatement,
+        ExpressionStatement,
     }
 }
