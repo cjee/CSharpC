@@ -64,9 +64,28 @@ namespace Compiler.CodeAnalysis.Syntax
 
         public SyntaxTree Parse()
         {
-            var statementBlock = ParseStatementBlock();
+            var metodDeclaration = ParseMethodeDeclaration();
             var endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
-            return new SyntaxTree(Diagnostics, statementBlock, endOfFileToken);
+            return new SyntaxTree(Diagnostics, metodDeclaration, endOfFileToken);
+        }
+
+        private MethodDeclarationSyntax ParseMethodeDeclaration()
+        {
+            SyntaxToken type;
+            if (Current.Kind is SyntaxKind.BoolKeyword
+                or SyntaxKind.IntKeyword
+                or SyntaxKind.VoidKeyword
+                or SyntaxKind.Identifier)
+                type = NextToken();
+            else
+                type = MatchToken(SyntaxKind.VoidKeyword);
+            
+            var memberName = MatchToken(SyntaxKind.Identifier);
+            var openParenthesis = MatchToken(SyntaxKind.OpenParenthesisToken);
+            var closeParenthesis = MatchToken(SyntaxKind.CloseParenthesisToken);
+            var body = ParseStatementBlock();
+
+            return new MethodDeclarationSyntax(type, memberName, openParenthesis, closeParenthesis, body);
         }
 
         private BlockStatementSyntax ParseStatementBlock()
