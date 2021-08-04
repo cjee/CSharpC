@@ -69,7 +69,7 @@ namespace Compiler.CodeAnalysis.Syntax
             return new SyntaxTree(Diagnostics, statementBlock, endOfFileToken);
         }
 
-        private BlockStatementSyntaxSyntax ParseStatementBlock()
+        private BlockStatementSyntax ParseStatementBlock()
         {
             var openBrace = MatchToken(SyntaxKind.OpenBraceToken);
 
@@ -81,7 +81,7 @@ namespace Compiler.CodeAnalysis.Syntax
             }
 
             var closeBrace = MatchToken(SyntaxKind.CloseBraceToken);
-            return new BlockStatementSyntaxSyntax(openBrace, statementList.ToImmutable(), closeBrace);
+            return new BlockStatementSyntax(openBrace, statementList.ToImmutable(), closeBrace);
 
         }
 

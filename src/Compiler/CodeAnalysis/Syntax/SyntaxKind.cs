@@ -34,7 +34,7 @@ namespace Compiler.CodeAnalysis.Syntax
         // Keyworkds
         FalseKeyword,
         TrueKeyword,
-        
+        VoidKeyword,
         BoolKeyword,
         IntKeyword,
         ReturnKeyword,
@@ -56,5 +56,7 @@ namespace Compiler.CodeAnalysis.Syntax
         LocalVariableDeclarationStatement,
         ExpressionStatement,
         ReturnStatement,
+        
+        MethodDeclaration,
     }
 }

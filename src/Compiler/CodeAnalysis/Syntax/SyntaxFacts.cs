@@ -34,6 +34,7 @@ namespace Compiler.CodeAnalysis.Syntax
             {
                 "true" => SyntaxKind.TrueKeyword,
                 "false" => SyntaxKind.FalseKeyword,
+                "void" => SyntaxKind.VoidKeyword,
                 "bool" => SyntaxKind.BoolKeyword,
                 "int" => SyntaxKind.IntKeyword,
                 "return" => SyntaxKind.ReturnKeyword,
