@@ -93,8 +93,20 @@ namespace Compiler.CodeAnalysis.Syntax
                 SyntaxKind.SemicolonToken => new EmptyStatementSyntaxSyntax(NextToken()),
                 
                 SyntaxKind.IntKeyword or SyntaxKind.BoolKeyword => ParseDeclarationStatement(),
+                SyntaxKind.ReturnKeyword => ParseReturnStatement(),
                 _ => ParseExpressionStatement(),
             };
+        }
+
+        private ReturnStatementSyntax ParseReturnStatement()
+        {
+            var returnKeyword = NextToken();
+            if(Current.Kind == SyntaxKind.SemicolonToken)
+                return new ReturnStatementSyntax(returnKeyword, null, NextToken());
+            
+            var expression = ParseExpression();
+            var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+            return new ReturnStatementSyntax(returnKeyword, expression, semicolon);
         }
 
         private StatementSyntax ParseExpressionStatement()

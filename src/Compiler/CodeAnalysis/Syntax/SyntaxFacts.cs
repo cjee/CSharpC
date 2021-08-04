@@ -36,6 +36,7 @@ namespace Compiler.CodeAnalysis.Syntax
                 "false" => SyntaxKind.FalseKeyword,
                 "bool" => SyntaxKind.BoolKeyword,
                 "int" => SyntaxKind.IntKeyword,
+                "return" => SyntaxKind.ReturnKeyword,
                 _ => SyntaxKind.Identifier,
             };
         }

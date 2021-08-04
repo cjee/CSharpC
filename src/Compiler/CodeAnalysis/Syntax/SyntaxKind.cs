@@ -37,6 +37,7 @@ namespace Compiler.CodeAnalysis.Syntax
         
         BoolKeyword,
         IntKeyword,
+        ReturnKeyword,
 
         Identifier,
         
@@ -54,5 +55,6 @@ namespace Compiler.CodeAnalysis.Syntax
         EmptyStatement,
         LocalVariableDeclarationStatement,
         ExpressionStatement,
+        ReturnStatement,
     }
 }
