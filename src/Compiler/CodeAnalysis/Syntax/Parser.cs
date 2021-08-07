@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
@@ -244,13 +245,40 @@ namespace Compiler.CodeAnalysis.Syntax
                 {
                     case SyntaxKind.OpenParenthesisToken:
                         var open = NextToken();
+                        var arguments = ParseArgumentList();
                         var close = MatchToken(SyntaxKind.CloseParenthesisToken);
-                        expression = new InvocationExpressionSyntax(expression, open, close);
+                        expression = new InvocationExpressionSyntax(expression, open, arguments, close);
                         break;
                     default:
                         return expression;
                 }
             }
+        }
+
+        private SeperatedSyntaxList<ExpressionsSyntax> ParseArgumentList()
+        {
+            var builder = ImmutableList.CreateBuilder<SyntaxNode>();
+            
+            builder.Add(ParseExpression());
+            
+            while (Current.Kind is not (SyntaxKind.CloseParenthesisToken or SyntaxKind.EndOfFileToken))
+            {
+                // Trying to return correct amount of ParameterSyntax objects based on how many commas are in declaration, 
+                // even if it is not possible to parse parameter syntax itself;
+                if (Current.Kind is not SyntaxKind.CommaToken)
+                {
+                    position++;
+                }
+                else
+                { 
+                    var comma = MatchToken(SyntaxKind.CommaToken);
+                    var parameter = ParseExpression();
+                    builder.Add(comma);
+                    builder.Add(parameter);
+                }
+            }
+
+            return new SeperatedSyntaxList<ExpressionsSyntax>(builder.ToImmutable());
         }
 
         private ExpressionsSyntax ParsePrimaryExpression()
