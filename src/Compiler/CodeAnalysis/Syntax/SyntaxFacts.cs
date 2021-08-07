@@ -82,5 +82,16 @@ namespace Compiler.CodeAnalysis.Syntax
                     return 0;
             }
         }
+        
+        public static bool IsBuiltInType(SyntaxKind currentKind)
+        {
+            return currentKind switch
+            {
+                SyntaxKind.VoidKeyword => true,
+                SyntaxKind.BoolKeyword => true,
+                SyntaxKind.IntKeyword => true,
+                _ => false,
+            };
+        }
     }
 }

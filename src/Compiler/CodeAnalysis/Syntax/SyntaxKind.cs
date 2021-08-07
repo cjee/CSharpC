@@ -42,7 +42,8 @@ namespace Compiler.CodeAnalysis.Syntax
         ReturnKeyword,
 
         Identifier,
-        
+        Type,
+
         // Expressions
         EmptyExpression,
         NumericLiteralExpression,
@@ -59,6 +60,8 @@ namespace Compiler.CodeAnalysis.Syntax
         ExpressionStatement,
         ReturnStatement,
         
+        //Member syntax
         MethodDeclaration,
+        Parameter,
     }
 }
