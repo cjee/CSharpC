@@ -119,6 +119,14 @@ namespace Compiler.CodeAnalysis.Syntax
                     kind = SyntaxKind.SemicolonToken;
                     position++;
                     break;
+                case '.':
+                    kind = SyntaxKind.DotToken;
+                    position++;
+                    break;
+                case ',':
+                    kind = SyntaxKind.CommaToken;
+                    position++;
+                    break;
                 case '0':
                 case '1':
                 case '2':

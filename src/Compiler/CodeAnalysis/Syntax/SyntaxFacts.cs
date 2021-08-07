@@ -24,6 +24,8 @@ namespace Compiler.CodeAnalysis.Syntax
                 SyntaxKind.OpenBraceToken => "{",
                 SyntaxKind.CloseBraceToken => "}",
                 SyntaxKind.SemicolonToken => ";",
+                SyntaxKind.DotToken => ".",
+                SyntaxKind.CommaToken => ",",
                 _ => string.Empty,
             };
         }

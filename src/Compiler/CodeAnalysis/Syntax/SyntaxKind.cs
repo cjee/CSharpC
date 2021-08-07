@@ -30,6 +30,8 @@ namespace Compiler.CodeAnalysis.Syntax
         OpenBraceToken,
         CloseBraceToken,
         SemicolonToken,
+        DotToken,
+        CommaToken,
 
         // Keyworkds
         FalseKeyword,
