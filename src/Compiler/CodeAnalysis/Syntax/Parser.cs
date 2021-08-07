@@ -133,8 +133,13 @@ namespace Compiler.CodeAnalysis.Syntax
 
             var statementList = ImmutableList.CreateBuilder<StatementSyntax>();
 
+            var startPosition = position;
             while (Current.Kind is not (SyntaxKind.CloseBraceToken or SyntaxKind.EndOfFileToken))
+            {
                 statementList.Add(ParseStatement());
+                if (position == startPosition)
+                    position++; //Skipping tokens if we cant parse statements
+            }
 
             var closeBrace = MatchToken(SyntaxKind.CloseBraceToken);
             return new BlockStatementSyntax(openBrace, statementList.ToImmutable(), closeBrace);
