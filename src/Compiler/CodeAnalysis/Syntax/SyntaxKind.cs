@@ -64,5 +64,7 @@ namespace Compiler.CodeAnalysis.Syntax
         //Member syntax
         MethodDeclaration,
         Parameter,
+        
+        CompilationUnit,
     }
 }

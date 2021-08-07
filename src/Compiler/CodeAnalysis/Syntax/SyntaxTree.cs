@@ -1,17 +1,17 @@
+using System.Runtime.CompilerServices;
+
 namespace Compiler.CodeAnalysis.Syntax
 {
     public class SyntaxTree
     {
-        public SyntaxTree(DiagnosticBag diagnostics, MethodDeclarationSyntax root, SyntaxToken endOfFileToken)
+        public SyntaxTree(DiagnosticBag diagnostics, CompilationUnit root)
         {
             Diagnostics = diagnostics;
             Root = root;
-            EndOfFileToken = endOfFileToken;
         }
 
         public DiagnosticBag Diagnostics { get; }
-        public MethodDeclarationSyntax Root { get; }
-        public SyntaxToken EndOfFileToken { get; }
+        public CompilationUnit Root { get; }
 
         public static SyntaxTree Parse(string text)
         {

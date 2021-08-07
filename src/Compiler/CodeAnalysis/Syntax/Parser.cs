@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
@@ -63,9 +64,30 @@ namespace Compiler.CodeAnalysis.Syntax
 
         public SyntaxTree Parse()
         {
-            var metodDeclaration = ParseMethodeDeclaration();
+            var compilationUnit = ParseCompilationUnit();
+            return new SyntaxTree(Diagnostics, compilationUnit);
+        }
+
+        private CompilationUnit ParseCompilationUnit()
+        {
+            var builder = ImmutableList.CreateBuilder<MethodDeclarationSyntax>();
+            var startposition = position;
+            while (Current.Kind != SyntaxKind.EndOfFileToken)
+            {
+                startposition = position;
+                var method = ParseMethodeDeclaration();
+                if (position == startposition)
+                {
+                    position++;
+                }
+                else
+                {
+                    builder.Add(method);
+                }
+            }
+
             var endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
-            return new SyntaxTree(Diagnostics, metodDeclaration, endOfFileToken);
+            return new CompilationUnit(builder.ToImmutable(), endOfFileToken);
         }
 
         private MethodDeclarationSyntax ParseMethodeDeclaration()
