@@ -90,23 +90,23 @@ namespace Compiler.CodeAnalysis.Syntax
         private SeperatedSyntaxList<ParameterSyntax> ParseMethodeDeclarationParameters()
         {
             var builder = ImmutableList.CreateBuilder<SyntaxNode>();
+
+            var parseNextParameter = true;
             
-            builder.Add(ParseParameter());
-            
-            while (Current.Kind is not (SyntaxKind.CloseParenthesisToken or SyntaxKind.EndOfFileToken))
+            while (parseNextParameter && 
+                   Current.Kind != SyntaxKind.CloseBraceToken &&
+                   Current.Kind != SyntaxKind.EndOfFileToken)
             {
-                // Trying to return correct amount of ParameterSyntax objects based on how many commas are in declaration, 
-                // even if it is not possible to parse parameter syntax itself;
-                if (Current.Kind is not SyntaxKind.CommaToken)
+                var parameter = ParseParameter();
+                builder.Add(parameter);
+                if (Current.Kind == SyntaxKind.CommaToken)
                 {
-                    position++;
+                    var comma = NextToken();
+                    builder.Add(comma);
                 }
                 else
-                { 
-                    var comma = MatchToken(SyntaxKind.CommaToken);
-                    var parameter = ParseParameter();
-                    builder.Add(comma);
-                    builder.Add(parameter);
+                {
+                    parseNextParameter = false;
                 }
             }
 
@@ -137,6 +137,7 @@ namespace Compiler.CodeAnalysis.Syntax
             var startPosition = position;
             while (Current.Kind is not (SyntaxKind.CloseBraceToken or SyntaxKind.EndOfFileToken))
             {
+                startPosition = position;
                 statementList.Add(ParseStatement());
                 if (position == startPosition)
                     position++; //Skipping tokens if we cant parse statements
@@ -259,22 +260,22 @@ namespace Compiler.CodeAnalysis.Syntax
         {
             var builder = ImmutableList.CreateBuilder<SyntaxNode>();
             
-            builder.Add(ParseExpression());
+            var parseNextParameter = true;
             
-            while (Current.Kind is not (SyntaxKind.CloseParenthesisToken or SyntaxKind.EndOfFileToken))
+            while (parseNextParameter && 
+                   Current.Kind != SyntaxKind.CloseBraceToken &&
+                   Current.Kind != SyntaxKind.EndOfFileToken)
             {
-                // Trying to return correct amount of ParameterSyntax objects based on how many commas are in declaration, 
-                // even if it is not possible to parse parameter syntax itself;
-                if (Current.Kind is not SyntaxKind.CommaToken)
+                var parameter = ParseExpression();
+                builder.Add(parameter);
+                if (Current.Kind == SyntaxKind.CommaToken)
                 {
-                    position++;
+                    var comma = NextToken();
+                    builder.Add(comma);
                 }
                 else
-                { 
-                    var comma = MatchToken(SyntaxKind.CommaToken);
-                    var parameter = ParseExpression();
-                    builder.Add(comma);
-                    builder.Add(parameter);
+                {
+                    parseNextParameter = false;
                 }
             }
 
