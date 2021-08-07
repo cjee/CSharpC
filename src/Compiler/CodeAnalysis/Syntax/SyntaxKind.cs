@@ -52,6 +52,7 @@ namespace Compiler.CodeAnalysis.Syntax
         UnaryExpression,
         BinaryExpression,
         ParenthesizedExpression,
+        InvocationExpression,
 
         // Statements
         BlockStatement,

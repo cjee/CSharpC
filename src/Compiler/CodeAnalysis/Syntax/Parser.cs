@@ -210,7 +210,7 @@ namespace Compiler.CodeAnalysis.Syntax
             }
             else
             {
-                left = ParsePrimaryExpression();
+                left = ParseTerm();
             }
 
             while (true)
@@ -229,6 +229,28 @@ namespace Compiler.CodeAnalysis.Syntax
             }
 
             return left;
+        }
+
+        private ExpressionsSyntax ParseTerm()
+        {
+            return ParsePostfixExpression(ParsePrimaryExpression());
+        }
+
+        private ExpressionsSyntax ParsePostfixExpression(ExpressionsSyntax expression)
+        {
+            while (true)
+            {
+                switch (Current.Kind)
+                {
+                    case SyntaxKind.OpenParenthesisToken:
+                        var open = NextToken();
+                        var close = MatchToken(SyntaxKind.CloseParenthesisToken);
+                        expression = new InvocationExpressionSyntax(expression, open, close);
+                        break;
+                    default:
+                        return expression;
+                }
+            }
         }
 
         private ExpressionsSyntax ParsePrimaryExpression()
