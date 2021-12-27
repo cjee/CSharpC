@@ -34,10 +34,9 @@ namespace Compiler
                 var diagnostics = new DiagnosticBag();
                 var result = SyntaxTree.Parse(textBuilder.ToString());
                 diagnostics.AddRange(result.Diagnostics);
-                
-                var binder = new Binder();
-               // var boundTree = binder.BindExpression(result.Root);
-               // diagnostics.AddRange(binder.Diagnostics);
+
+                var globalScope = Binder.BindGlobalScope(result.Root);
+                diagnostics.AddRange(globalScope.Diagnostics);
                 
                 PrintSyntaxTreeNode(result.Root);
                // boundTree.WriteTo(Console.Out);

@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using Compiler.CodeAnalysis.Symbols;
 using Compiler.CodeAnalysis.Syntax;
 
 namespace Compiler.CodeAnalysis.Binding
@@ -9,6 +11,64 @@ namespace Compiler.CodeAnalysis.Binding
         private DiagnosticBag diagnostics = new();
 
         public DiagnosticBag Diagnostics => diagnostics;
+
+        private BoundScope scope = new BoundScope(null);
+        
+        public static BoundGlobalScope BindGlobalScope(CompilationUnit syntax)
+        {
+            var binder = new Binder();
+
+            foreach (var method in syntax.Methods)
+            {
+                binder.BindFunctionDeclaration(method);
+            }
+
+            var methods = binder.scope.GetDeclaredMethods();
+            return new BoundGlobalScope(binder.Diagnostics, methods);
+        }
+
+        private void BindFunctionDeclaration(MethodDeclarationSyntax syntax)
+        {
+            var parameters = ImmutableList.CreateBuilder<ParameterSymbol>();
+            var seenParameterNames = new HashSet<string>();
+
+            foreach (var parameter in syntax.Parameters)
+            {
+                var parameterName = parameter.Identifier.Text;
+                var parameterType = BindTypeClause(parameter.Type);
+                if (!seenParameterNames.Add(parameterName))
+                    diagnostics.ReportParameterAlreadyDeclared(parameter.Identifier);
+                else
+                {
+                    var parameterSymbol = new ParameterSymbol(parameterName, parameterType);
+                    parameters.Add(parameterSymbol);
+                }
+            }
+
+            var methodType = BindTypeClause(syntax.ReturnType);
+            var method = new MethodSymbol(syntax.MemberName.Text, methodType, parameters.ToImmutableList(), syntax);
+            if (!scope.TryDeclareMethod(method))
+                diagnostics.ReportMethodAlreadyDeclared(syntax.MemberName);
+        }
+
+        private TypeSymbol BindTypeClause(TypeSyntax typeSyntax)
+        {
+            var type = LookopType(typeSyntax.Identifier.Text);
+            if (type == TypeSymbol.Error) 
+                diagnostics.ReportUndefinedType(typeSyntax);
+            return type;
+        }
+
+        private TypeSymbol LookopType(string name)
+        {
+            return name switch
+            {
+                "bool" => TypeSymbol.Boolean,
+                "int" => TypeSymbol.Int,
+                "void" => TypeSymbol.Void,
+                _ => TypeSymbol.Error
+            };
+        }
 
         public BoundExpression BindExpression(ExpressionsSyntax expressionsSyntax)
         {

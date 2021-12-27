@@ -7,7 +7,7 @@ namespace Compiler.CodeAnalysis.Syntax
         public TypeSyntax ReturnType { get; }
         public SyntaxToken MemberName { get; }
         public SyntaxToken OpenParenthesis { get; }
-        public SeperatedSyntaxList<ParameterSyntax>? Parameters { get; }
+        public SeperatedSyntaxList<ParameterSyntax> Parameters { get; }
         public SyntaxToken CloseParenthesis { get; }
         public BlockStatementSyntax Body { get; }
 
@@ -15,7 +15,7 @@ namespace Compiler.CodeAnalysis.Syntax
             TypeSyntax returnType,
             SyntaxToken memberName,
             SyntaxToken openParenthesis,
-            SeperatedSyntaxList<ParameterSyntax>? parameters,
+            SeperatedSyntaxList<ParameterSyntax> parameters,
             SyntaxToken closeParenthesis,
             BlockStatementSyntax body)
         {
@@ -34,13 +34,12 @@ namespace Compiler.CodeAnalysis.Syntax
             yield return ReturnType;
             yield return MemberName;
             yield return OpenParenthesis;
-            if (Parameters is not null)
+
+            foreach (var parameter in Parameters)
             {
-                foreach (var parameter in Parameters)
-                {
-                    yield return parameter;
-                }
+                yield return parameter;
             }
+
             yield return CloseParenthesis;
             yield return Body;
         }

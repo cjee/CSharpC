@@ -70,5 +70,26 @@ namespace Compiler.CodeAnalysis
             var message = "Expected an expression";
             Report(span, message);
         }
+
+        public void ReportParameterAlreadyDeclared(SyntaxToken parameterIdentifier)
+        {
+            var message =
+                $"Parameter with name '{parameterIdentifier.Text}' is already declared'";
+            Report(parameterIdentifier.TextSpan, message);
+        }
+
+        public void ReportUndefinedType(TypeSyntax typeSyntax)
+        {
+            var message =
+                $"Undefined type: '{typeSyntax.Identifier.Text}'";
+            Report(typeSyntax.Identifier.TextSpan, message);
+        }
+
+        public void ReportMethodAlreadyDeclared(SyntaxToken syntaxMemberName)
+        {
+            var message =
+                $"Method with name '{syntaxMemberName.Text}' is already declared'";
+            Report(syntaxMemberName.TextSpan, message);
+        }
     }
 }

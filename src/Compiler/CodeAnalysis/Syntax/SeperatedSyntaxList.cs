@@ -24,5 +24,7 @@ namespace Compiler.CodeAnalysis.Syntax
         }
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public static SeperatedSyntaxList<T> Empty() => new(ImmutableList<SyntaxNode>.Empty);
+  
     }
 }
