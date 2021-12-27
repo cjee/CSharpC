@@ -1,11 +1,9 @@
 ﻿using System;
-using System.CodeDom.Compiler;
 using System.Linq;
 using System.Text;
 using Compiler.CodeAnalysis;
 using Compiler.CodeAnalysis.Binding;
 using Compiler.CodeAnalysis.Syntax;
-using Compiler.CodeAnalysis.Text;
 
 namespace Compiler
 {
@@ -35,11 +33,15 @@ namespace Compiler
                 var result = SyntaxTree.Parse(textBuilder.ToString());
                 diagnostics.AddRange(result.Diagnostics);
 
+                PrintSyntaxTreeNode(result.Root);
+                
                 var globalScope = Binder.BindGlobalScope(result.Root);
                 diagnostics.AddRange(globalScope.Diagnostics);
+
+                var boundProgram = Binder.BindProgram(globalScope);
                 
-                PrintSyntaxTreeNode(result.Root);
-               // boundTree.WriteTo(Console.Out);
+                PrintBoundProgram(boundProgram);
+                
                 Console.WriteLine();
                 
                 if (diagnostics.Any())
@@ -53,6 +55,17 @@ namespace Compiler
                 }
 
                 textBuilder.Clear();
+            }
+        }
+
+        private static void PrintBoundProgram(BoundProgram boundProgram)
+        {
+            foreach (var (symbol, body) in boundProgram.Methods)
+            {
+                Console.Write($"{symbol.Type.Name} {symbol.Name} (");
+                Console.Write(string.Join(", ", symbol.Parameters.Select(x => $"{x.Type.Name} {x.Name}")));
+                Console.WriteLine(")");
+                body.WriteTo(Console.Out); 
             }
         }
 

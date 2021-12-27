@@ -31,11 +31,34 @@ namespace Compiler.CodeAnalysis.Binding
                 case BoundNodeKind.BooleanLiteralExpression:
                     writer.WriteBooleanLiteralExpression((BoundBooleanLiteralExpression) node);
                     break;
+                case BoundNodeKind.BoundBlockStatement:
+                    writer.WriteBlockStatement((BoundBlockStatement)node);
+                    break;
+                case BoundNodeKind.BoundEmptyStatement:
+                    writer.WritePunctuation(SyntaxKind.SemicolonToken);
+                    break;
                 default:
                     throw new Exception($"Unrecognized bound node kind: {node.Kind}");
             }
         }
 
+        private static void WriteBlockStatement(this IndentedTextWriter writer, BoundBlockStatement node)
+        {
+            writer.WritePunctuation(SyntaxKind.OpenBraceToken);
+            writer.WriteLine();
+            writer.Indent++;
+
+            foreach (var statement in node.Statements)
+            {
+                writer.WriteNode(statement);
+                writer.WriteLine();
+            }
+            
+            writer.Indent--;
+            writer.WritePunctuation(SyntaxKind.CloseBraceToken);
+            writer.WriteLine();
+        }
+        
         private static void WriteUnaryExpression(this IndentedTextWriter writer, BoundUnaryExpression node)
         {
             var precedence = node.BoundOperator.SyntaxKind.GetUnaryOperatorPrecedence();

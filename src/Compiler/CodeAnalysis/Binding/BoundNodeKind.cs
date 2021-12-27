@@ -6,5 +6,9 @@ namespace Compiler.CodeAnalysis.Binding
         BooleanLiteralExpression,
         UnaryExpression,
         BinaryExpression,
+        
+        //Statements
+        BoundBlockStatement,
+        BoundEmptyStatement,
     }
 }

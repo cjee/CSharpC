@@ -12,8 +12,12 @@ namespace Compiler.CodeAnalysis.Binding
 
         public DiagnosticBag Diagnostics => diagnostics;
 
-        private BoundScope scope = new BoundScope(null);
-        
+        private BoundScope scope;
+        private Binder(BoundScope? parentScope = null)
+        {
+            scope = parentScope ?? new BoundScope(null);
+        }
+
         public static BoundGlobalScope BindGlobalScope(CompilationUnit syntax)
         {
             var binder = new Binder();
@@ -25,6 +29,63 @@ namespace Compiler.CodeAnalysis.Binding
 
             var methods = binder.scope.GetDeclaredMethods();
             return new BoundGlobalScope(binder.Diagnostics, methods);
+        }
+
+        public static BoundProgram BindProgram(BoundGlobalScope globalScope)
+        {
+            var parentScope = CreateParentScope(globalScope);
+
+            var methodBodies
+                = ImmutableDictionary.CreateBuilder<MethodSymbol, BoundBlockStatement>();
+            var diagnostics = new DiagnosticBag();
+
+            foreach (var method in globalScope.Methods)
+            {
+                var binder = new Binder(parentScope);
+                var body = binder.BindBlockStatement(method.Declaration.Body);
+                
+                methodBodies.Add(method, body);
+                diagnostics.AddRange(binder.diagnostics);
+            }
+
+            return new BoundProgram(diagnostics, methodBodies.ToImmutable());
+        }
+
+        private BoundBlockStatement BindBlockStatement(BlockStatementSyntax syntax)
+        {
+            var statements = ImmutableList.CreateBuilder<BoundStatment>();
+
+            scope = new BoundScope(scope);
+            
+            foreach (var statement in syntax.Statements)
+            {
+                var boundStatement = BindStatement(statement);
+                statements.Add(boundStatement);
+            }
+
+            scope = scope.Parent!;
+            return new BoundBlockStatement(statements.ToImmutable());
+        }
+
+        private BoundStatment BindStatement(StatementSyntax syntax)
+        {
+            return syntax.Kind switch
+            {
+                SyntaxKind.BlockStatement => BindBlockStatement((BlockStatementSyntax)syntax),
+                SyntaxKind.EmptyStatement => new BoundEmptyStatement(),
+                _ => throw new Exception($"Unexpected syntax {syntax.Kind}"),
+            };
+        }
+        
+        private static BoundScope CreateParentScope(BoundGlobalScope globalScope)
+        {
+            var scope = new BoundScope(null);
+            foreach (var method in globalScope.Methods)
+            {
+                scope.TryDeclareMethod(method);
+            }
+
+            return scope;
         }
 
         private void BindFunctionDeclaration(MethodDeclarationSyntax syntax)

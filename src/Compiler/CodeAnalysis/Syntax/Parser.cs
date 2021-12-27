@@ -98,7 +98,7 @@ namespace Compiler.CodeAnalysis.Syntax
             var openParenthesis = MatchToken(SyntaxKind.OpenParenthesisToken);
 
 
-            SeperatedSyntaxList<ParameterSyntax>? parameters = null;
+            SeperatedSyntaxList<ParameterSyntax>? parameters = SeperatedSyntaxList<ParameterSyntax>.Empty();
             if (Current.Kind is not (SyntaxKind.CloseParenthesisToken or SyntaxKind.OpenBraceToken))
                 parameters = ParseMethodeDeclarationParameters();
 
@@ -174,7 +174,7 @@ namespace Compiler.CodeAnalysis.Syntax
             return Current.Kind switch
             {
                 SyntaxKind.OpenBraceToken => ParseStatementBlock(),
-                SyntaxKind.SemicolonToken => new EmptyStatementSyntaxSyntax(NextToken()),
+                SyntaxKind.SemicolonToken => new EmptyStatementSyntax(NextToken()),
 
                 SyntaxKind.IntKeyword or SyntaxKind.BoolKeyword => ParseDeclarationStatement(),
                 SyntaxKind.ReturnKeyword => ParseReturnStatement(),
