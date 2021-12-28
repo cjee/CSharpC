@@ -171,15 +171,20 @@ namespace Compiler.CodeAnalysis.Syntax
 
         private StatementSyntax ParseStatement()
         {
-            return Current.Kind switch
-            {
-                SyntaxKind.OpenBraceToken => ParseStatementBlock(),
-                SyntaxKind.SemicolonToken => new EmptyStatementSyntax(NextToken()),
+            if (Current.Kind == SyntaxKind.OpenBraceToken)
+                return ParseStatementBlock();
+            if (Current.Kind == SyntaxKind.SemicolonToken)
+                return new EmptyStatementSyntax(NextToken());
+            if (IsTypeSyntax())
+                return ParseDeclarationStatement();
+            if (Current.Kind == SyntaxKind.ReturnKeyword)
+                return ParseReturnStatement();
+            return ParseExpressionStatement();
+        }
 
-                SyntaxKind.IntKeyword or SyntaxKind.BoolKeyword => ParseDeclarationStatement(),
-                SyntaxKind.ReturnKeyword => ParseReturnStatement(),
-                _ => ParseExpressionStatement(),
-            };
+        private bool IsTypeSyntax()
+        {
+            return Current.Kind is SyntaxKind.IntKeyword or SyntaxKind.BoolKeyword or SyntaxKind.VoidKeyword;
         }
 
         private ReturnStatementSyntax ParseReturnStatement()
@@ -203,6 +208,7 @@ namespace Compiler.CodeAnalysis.Syntax
         private StatementSyntax ParseDeclarationStatement()
         {
             TypeSyntax type = ParseType();
+            
             SyntaxToken? equalsToken = null;
             ExpressionsSyntax? expressionsSyntax = null;
 
