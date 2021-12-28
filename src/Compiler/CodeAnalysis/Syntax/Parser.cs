@@ -202,7 +202,7 @@ namespace Compiler.CodeAnalysis.Syntax
 
         private StatementSyntax ParseDeclarationStatement()
         {
-            SyntaxToken type = NextToken();
+            TypeSyntax type = ParseType();
             SyntaxToken? equalsToken = null;
             ExpressionsSyntax? expressionsSyntax = null;
 
@@ -218,7 +218,7 @@ namespace Compiler.CodeAnalysis.Syntax
             }
 
             SyntaxToken semicolon = MatchToken(SyntaxKind.SemicolonToken);
-            return new LocalVariableDeclarationStatementSyntaxSyntax(type, identifier, equalsToken, expressionsSyntax,
+            return new LocalVariableDeclarationStatementSyntax(type, identifier, equalsToken, expressionsSyntax,
                 semicolon);
         }
 

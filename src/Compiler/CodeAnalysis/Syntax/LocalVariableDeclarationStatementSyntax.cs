@@ -3,16 +3,16 @@ using System.Collections.Generic;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public sealed class  LocalVariableDeclarationStatementSyntaxSyntax : StatementSyntax
+    public sealed class  LocalVariableDeclarationStatementSyntax : StatementSyntax
     {
-        public SyntaxToken Type { get; }
+        public TypeSyntax Type { get; }
         public SyntaxToken Identifier { get; }
         public SyntaxToken? EqualsToken { get; }
         public ExpressionsSyntax? Initializer { get; }
         public SyntaxToken Semicolon { get; }
 
-        public LocalVariableDeclarationStatementSyntaxSyntax(
-            SyntaxToken type,
+        public LocalVariableDeclarationStatementSyntax(
+            TypeSyntax type,
             SyntaxToken identifier,
             SyntaxToken? equalsToken,
             ExpressionsSyntax? initializer,
