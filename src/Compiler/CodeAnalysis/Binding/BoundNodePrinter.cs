@@ -34,6 +34,9 @@ namespace Compiler.CodeAnalysis.Binding
                 case BoundNodeKind.BoundBlockStatement:
                     writer.WriteBlockStatement((BoundBlockStatement)node);
                     break;
+                case BoundNodeKind.BoundLocalVariableDeclarationStatement:
+                    writer.WriteLocalVariableDeclarationStatement((BoundLocalVariableDeclarationStatement)node);
+                    break;
                 case BoundNodeKind.BoundEmptyStatement:
                     writer.WritePunctuation(SyntaxKind.SemicolonToken);
                     break;
@@ -56,7 +59,16 @@ namespace Compiler.CodeAnalysis.Binding
             
             writer.Indent--;
             writer.WritePunctuation(SyntaxKind.CloseBraceToken);
-            writer.WriteLine();
+        }
+
+        private static void WriteLocalVariableDeclarationStatement(this IndentedTextWriter writer, BoundLocalVariableDeclarationStatement node)
+        {
+            writer.Write($"{node.Variable.Type.Name} {node.Variable.Name}");
+            if (node.Initializer != null)
+            {
+                writer.Write(" = ");
+                writer.WriteNode(node.Initializer);
+            }
         }
         
         private static void WriteUnaryExpression(this IndentedTextWriter writer, BoundUnaryExpression node)

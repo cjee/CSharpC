@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using Compiler.CodeAnalysis.Symbols;
 using Compiler.CodeAnalysis.Syntax;
 
@@ -13,14 +14,21 @@ namespace Compiler.CodeAnalysis.Binding
         public DiagnosticBag Diagnostics => diagnostics;
 
         private BoundScope scope;
-        private Binder(BoundScope? parentScope = null)
+        private Binder(BoundScope parentScope, MethodSymbol? method)
         {
-            scope = parentScope ?? new BoundScope(null);
+            scope = new BoundScope(parentScope);
+            if (method != null)
+            {
+                foreach (var parameter in method.Parameters)
+                {
+                    scope.TryDeclareLocalVariable(parameter);
+                }
+            }
         }
 
         public static BoundGlobalScope BindGlobalScope(CompilationUnit syntax)
         {
-            var binder = new Binder();
+            var binder = new Binder(new BoundScope(null), null);
 
             foreach (var method in syntax.Methods)
             {
@@ -41,7 +49,7 @@ namespace Compiler.CodeAnalysis.Binding
 
             foreach (var method in globalScope.Methods)
             {
-                var binder = new Binder(parentScope);
+                var binder = new Binder(parentScope, method);
                 var body = binder.BindBlockStatement(method.Declaration.Body);
                 
                 methodBodies.Add(method, body);
@@ -71,12 +79,43 @@ namespace Compiler.CodeAnalysis.Binding
         {
             return syntax.Kind switch
             {
+                SyntaxKind.LocalVariableDeclarationStatement => BindLocalVariableDeclarationStatement((LocalVariableDeclarationStatementSyntax)syntax),
                 SyntaxKind.BlockStatement => BindBlockStatement((BlockStatementSyntax)syntax),
                 SyntaxKind.EmptyStatement => new BoundEmptyStatement(),
                 _ => throw new Exception($"Unexpected syntax {syntax.Kind}"),
             };
         }
-        
+
+        private BoundLocalVariableDeclarationStatement BindLocalVariableDeclarationStatement(
+            LocalVariableDeclarationStatementSyntax syntax)
+        {
+            var type = BindTypeClause(syntax.Type);
+            if (type == TypeSymbol.Void)
+            {
+                diagnostics.ReportCannotDeclareVariableWithTypeVoid(syntax.Type.Identifier);
+            }
+            if (type == TypeSymbol.Error)
+            {
+                diagnostics.ReportUndefinedType(syntax.Type);
+            }
+            var initializer = syntax.Initializer != null ? BindExpression(syntax.Initializer) : type.DefaultInitializer;
+
+            var variable = BindVariable(syntax.Identifier, type);
+            return new BoundLocalVariableDeclarationStatement(variable, initializer);
+
+        }
+
+        private VariableSymbol BindVariable(SyntaxToken identifier, TypeSymbol type)
+        {
+            var variable = new VariableSymbol(identifier.Text, type);
+            if (!scope.TryDeclareLocalVariable(variable))
+            {
+                diagnostics.ReportVaribleAlreadyDeclared(identifier);
+            }
+
+            return variable;
+        }
+
         private static BoundScope CreateParentScope(BoundGlobalScope globalScope)
         {
             var scope = new BoundScope(null);

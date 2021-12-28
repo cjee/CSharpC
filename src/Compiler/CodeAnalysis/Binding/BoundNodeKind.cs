@@ -10,5 +10,6 @@ namespace Compiler.CodeAnalysis.Binding
         //Statements
         BoundBlockStatement,
         BoundEmptyStatement,
+        BoundLocalVariableDeclarationStatement,
     }
 }

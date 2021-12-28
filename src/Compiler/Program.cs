@@ -39,7 +39,7 @@ namespace Compiler
                 diagnostics.AddRange(globalScope.Diagnostics);
 
                 var boundProgram = Binder.BindProgram(globalScope);
-                
+                diagnostics.AddRange(boundProgram.Diagnostics);
                 PrintBoundProgram(boundProgram);
                 
                 Console.WriteLine();

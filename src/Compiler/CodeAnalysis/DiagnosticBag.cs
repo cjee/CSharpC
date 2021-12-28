@@ -91,5 +91,18 @@ namespace Compiler.CodeAnalysis
                 $"Method with name '{syntaxMemberName.Text}' is already declared'";
             Report(syntaxMemberName.TextSpan, message);
         }
+
+        public void ReportCannotDeclareVariableWithTypeVoid(SyntaxToken typeIdentifier)
+        {
+            const string message = $"Cannot declare variable with type 'void'";
+            Report(typeIdentifier.TextSpan, message);
+        }
+
+        public void ReportVaribleAlreadyDeclared(SyntaxToken identifier)
+        {
+            var message =
+                $"Variable with name '{identifier.Text}' is already declared'";
+            Report(identifier.TextSpan, message);
+        }
     }
 }

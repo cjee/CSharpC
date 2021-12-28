@@ -32,4 +32,17 @@ internal class BoundScope
         symbols.Add(symbol.Name, symbol);
         return true;
     }
+
+    public bool TryDeclareLocalVariable(VariableSymbol variable)
+    {
+        var scope = this;
+        while (scope != null)
+        {
+            if (scope.symbols.ContainsKey(variable.Name))
+                return false;
+            scope = scope.Parent;
+        }
+        symbols.Add(variable.Name, variable);
+        return true;
+    }
 }
