@@ -8,14 +8,14 @@ namespace Compiler.CodeAnalysis.Syntax
         public TypeSyntax Type { get; }
         public SyntaxToken Identifier { get; }
         public SyntaxToken? EqualsToken { get; }
-        public ExpressionsSyntax? Initializer { get; }
+        public ExpressionSyntax? Initializer { get; }
         public SyntaxToken Semicolon { get; }
 
         public LocalVariableDeclarationStatementSyntax(
             TypeSyntax type,
             SyntaxToken identifier,
             SyntaxToken? equalsToken,
-            ExpressionsSyntax? initializer,
+            ExpressionSyntax? initializer,
             SyntaxToken semicolon)
         {
             Type = type;

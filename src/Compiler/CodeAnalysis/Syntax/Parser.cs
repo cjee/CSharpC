@@ -210,7 +210,7 @@ namespace Compiler.CodeAnalysis.Syntax
             TypeSyntax type = ParseType();
             
             SyntaxToken? equalsToken = null;
-            ExpressionsSyntax? expressionsSyntax = null;
+            ExpressionSyntax? expressionsSyntax = null;
 
             SyntaxToken identifier = MatchToken(SyntaxKind.Identifier);
 
@@ -230,7 +230,7 @@ namespace Compiler.CodeAnalysis.Syntax
 
         private ExpressionsSyntax ParseExpression(int parentPrecedence = 0)
         {
-            ExpressionsSyntax left;
+            ExpressionSyntax left;
             var unaryPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
             if (unaryPrecedence != 0 && unaryPrecedence >= parentPrecedence)
             {
@@ -261,12 +261,12 @@ namespace Compiler.CodeAnalysis.Syntax
             return left;
         }
 
-        private ExpressionsSyntax ParseTerm()
+        private ExpressionSyntax ParseTerm()
         {
             return ParsePostfixExpression(ParsePrimaryExpression());
         }
 
-        private ExpressionsSyntax ParsePostfixExpression(ExpressionsSyntax expression)
+        private ExpressionSyntax ParsePostfixExpression(ExpressionSyntax expression)
         {
             while (true)
             {
@@ -284,7 +284,7 @@ namespace Compiler.CodeAnalysis.Syntax
             }
         }
 
-        private SeperatedSyntaxList<ExpressionsSyntax> ParseArgumentList()
+        private SeperatedSyntaxList<ExpressionSyntax> ParseArgumentList()
         {
             var builder = ImmutableList.CreateBuilder<SyntaxNode>();
             
@@ -294,7 +294,7 @@ namespace Compiler.CodeAnalysis.Syntax
                    Current.Kind != SyntaxKind.CloseBraceToken &&
                    Current.Kind != SyntaxKind.EndOfFileToken)
             {
-                var parameter = ParseExpression();
+                var parameter = ParseBinaryExpression();
                 builder.Add(parameter);
                 if (Current.Kind == SyntaxKind.CommaToken)
                 {
@@ -307,10 +307,10 @@ namespace Compiler.CodeAnalysis.Syntax
                 }
             }
 
-            return new SeperatedSyntaxList<ExpressionsSyntax>(builder.ToImmutable());
+            return new SeperatedSyntaxList<ExpressionSyntax>(builder.ToImmutable());
         }
 
-        private ExpressionsSyntax ParsePrimaryExpression()
+        private ExpressionSyntax ParsePrimaryExpression()
         {
             switch (Current.Kind)
             {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public sealed class BooleanLiteralExpressionSyntax : ExpressionsSyntax
+    public sealed class BooleanLiteralExpressionSyntax : ExpressionSyntax
     {
         public SyntaxToken BooleanToken { get; }
 

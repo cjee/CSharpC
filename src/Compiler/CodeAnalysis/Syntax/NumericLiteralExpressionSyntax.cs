@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public sealed class NumericLiteralExpressionSyntax : ExpressionsSyntax
+    public sealed class NumericLiteralExpressionSyntax : ExpressionSyntax
     {
         public NumericLiteralExpressionSyntax(SyntaxToken numberToken)
         {

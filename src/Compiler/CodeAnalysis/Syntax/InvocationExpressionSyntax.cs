@@ -2,17 +2,17 @@ using System.Collections.Generic;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public sealed class InvocationExpressionSyntax : ExpressionsSyntax
+    public sealed class InvocationExpressionSyntax : ExpressionSyntax
     {
-        public ExpressionsSyntax PrimaryExpression { get; }
+        public ExpressionSyntax PrimaryExpression { get; }
         public SyntaxToken OpenParenthesis { get; }
-        public SeperatedSyntaxList<ExpressionsSyntax> Arguments { get; }
+        public SeperatedSyntaxList<ExpressionSyntax> Arguments { get; }
         public SyntaxToken CloseParenthesis { get; }
 
         public InvocationExpressionSyntax(
-            ExpressionsSyntax primaryExpression,
+            ExpressionSyntax primaryExpression,
             SyntaxToken openParenthesis,
-            SeperatedSyntaxList<ExpressionsSyntax> arguments,
+            SeperatedSyntaxList<ExpressionSyntax> arguments,
             SyntaxToken closeParenthesis)
         {
             PrimaryExpression = primaryExpression;

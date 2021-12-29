@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public class EmptyExpressionSyntax : ExpressionsSyntax
+    public class EmptyExpressionSyntax : ExpressionSyntax
     {
         public override SyntaxKind Kind => SyntaxKind.EmptyExpression;
 

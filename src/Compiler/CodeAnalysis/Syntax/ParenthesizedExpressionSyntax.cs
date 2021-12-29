@@ -2,11 +2,11 @@ using System.Collections.Generic;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public sealed class ParenthesizedExpressionSyntax : ExpressionsSyntax
+    public sealed class ParenthesizedExpressionSyntax : ExpressionSyntax
     {
         public ParenthesizedExpressionSyntax(
             SyntaxToken openParenthesis,
-            ExpressionsSyntax expression,
+            ExpressionSyntax expression,
             SyntaxToken closeParenthesis)
         {
             OpenParenthesis = openParenthesis;
@@ -15,7 +15,7 @@ namespace Compiler.CodeAnalysis.Syntax
         }
 
         public SyntaxToken OpenParenthesis { get; }
-        public ExpressionsSyntax Expression { get; }
+        public ExpressionSyntax Expression { get; }
         public SyntaxToken CloseParenthesis { get; }
         public override SyntaxKind Kind => SyntaxKind.ParenthesizedExpression;
 

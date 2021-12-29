@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public sealed class SimpleNameExpressionSyntax : ExpressionsSyntax
+    public sealed class SimpleNameExpressionSyntax : ExpressionSyntax
     {
         public SyntaxToken Identifier { get; }
 

@@ -170,23 +170,23 @@ namespace Compiler.CodeAnalysis.Binding
             };
         }
 
-        public BoundExpression BindExpression(ExpressionsSyntax expressionsSyntax)
+        public BoundExpression BindExpression(ExpressionSyntax expressionSyntax)
         {
             
-            switch (expressionsSyntax.Kind)
+            switch (expressionSyntax.Kind)
             {
                 case SyntaxKind.NumericLiteralExpression:
-                    return BindNumericLiteralExpression((NumericLiteralExpressionSyntax)expressionsSyntax);
+                    return BindNumericLiteralExpression((NumericLiteralExpressionSyntax)expressionSyntax);
                 case SyntaxKind.BooleanLiteralExpression:
-                    return BindBooleanLiteralExpression((BooleanLiteralExpressionSyntax) expressionsSyntax);
+                    return BindBooleanLiteralExpression((BooleanLiteralExpressionSyntax) expressionSyntax);
                 case SyntaxKind.UnaryExpression:
-                    return BindUnaryExpression((UnaryExpressionSyntax)expressionsSyntax);
+                    return BindUnaryExpression((UnaryExpressionSyntax)expressionSyntax);
                 case SyntaxKind.BinaryExpression:
-                    return BindBinaryExpression((BinaryExpressionSyntax)expressionsSyntax);
+                    return BindBinaryExpression((BinaryExpressionSyntax)expressionSyntax);
                 case SyntaxKind.ParenthesizedExpression:
-                    return BindParenthesizedExpression((ParenthesizedExpressionSyntax)expressionsSyntax);
+                    return BindParenthesizedExpression((ParenthesizedExpressionSyntax)expressionSyntax);
                 default:
-                    throw new Exception($"Unexpected expression syntax kind: {expressionsSyntax.Kind}");
+                    throw new Exception($"Unexpected expression syntax kind: {expressionSyntax.Kind}");
             }
         }
 

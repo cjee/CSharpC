@@ -5,10 +5,10 @@ namespace Compiler.CodeAnalysis.Syntax
     internal class ReturnStatementSyntax : StatementSyntax
     {
         public SyntaxToken ReturnKeyword { get; }
-        public ExpressionsSyntax? Expression { get; }
+        public ExpressionSyntax? Expression { get; }
         public SyntaxToken Semicolon { get; }
 
-        public ReturnStatementSyntax(SyntaxToken returnKeyword, ExpressionsSyntax? expression, SyntaxToken semicolon)
+        public ReturnStatementSyntax(SyntaxToken returnKeyword, ExpressionSyntax? expression, SyntaxToken semicolon)
         {
             ReturnKeyword = returnKeyword;
             Expression = expression;

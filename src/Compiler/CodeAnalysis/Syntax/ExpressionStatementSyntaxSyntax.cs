@@ -4,10 +4,10 @@ namespace Compiler.CodeAnalysis.Syntax
 {
     public sealed class ExpressionStatementSyntaxSyntax : StatementSyntax
     {
-        public ExpressionsSyntax Expression { get; }
+        public ExpressionSyntax Expression { get; }
         public SyntaxNode Semicolon { get; }
 
-        public ExpressionStatementSyntaxSyntax(ExpressionsSyntax expression, SyntaxNode semicolon)
+        public ExpressionStatementSyntaxSyntax(ExpressionSyntax expression, SyntaxNode semicolon)
         {
             Expression = expression;
             Semicolon = semicolon;
