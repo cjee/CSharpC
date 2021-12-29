@@ -193,16 +193,28 @@ namespace Compiler.CodeAnalysis.Syntax
             if (Current.Kind == SyntaxKind.SemicolonToken)
                 return new ReturnStatementSyntax(returnKeyword, null, NextToken());
 
-            var expression = ParseExpression();
+            var expression = ParseBinaryExpression();
             var semicolon = MatchToken(SyntaxKind.SemicolonToken);
             return new ReturnStatementSyntax(returnKeyword, expression, semicolon);
         }
 
         private StatementSyntax ParseExpressionStatement()
         {
-            var expression = ParseExpression();
+            var expression = ParseAssignmentExpression();
             var semicolon = MatchToken(SyntaxKind.SemicolonToken);
             return new ExpressionStatementSyntaxSyntax(expression, semicolon);
+        }
+
+        private ExpressionSyntax ParseAssignmentExpression()
+        {
+            if (Peak(0).Kind == SyntaxKind.Identifier && Peak(1).Kind == SyntaxKind.EqualsToken)
+            {
+                var identifier = NextToken();
+                var operatorToken = NextToken();
+                var right = ParseAssignmentExpression();
+                return new AssignmentExpressionSyntax(identifier, operatorToken, right);
+            }
+            return ParseBinaryExpression();
         }
 
         private StatementSyntax ParseDeclarationStatement()
@@ -220,7 +232,7 @@ namespace Compiler.CodeAnalysis.Syntax
 
                 if (Current.Kind == SyntaxKind.SemicolonToken) Diagnostics.ReportMissingExpression(Current.TextSpan);
 
-                expressionsSyntax = ParseExpression();
+                expressionsSyntax = ParseBinaryExpression();
             }
 
             SyntaxToken semicolon = MatchToken(SyntaxKind.SemicolonToken);
@@ -228,14 +240,14 @@ namespace Compiler.CodeAnalysis.Syntax
                 semicolon);
         }
 
-        private ExpressionsSyntax ParseExpression(int parentPrecedence = 0)
+        private ExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0)
         {
             ExpressionSyntax left;
             var unaryPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
             if (unaryPrecedence != 0 && unaryPrecedence >= parentPrecedence)
             {
                 var operatorToken = NextToken();
-                var operand = ParseExpression(unaryPrecedence);
+                var operand = ParseBinaryExpression(unaryPrecedence);
                 left = new UnaryExpressionSyntax(operatorToken, operand);
             }
             else
@@ -254,7 +266,7 @@ namespace Compiler.CodeAnalysis.Syntax
                     break;
 
                 var operatorToken = NextToken();
-                var right = ParseExpression(precedence);
+                var right = ParseBinaryExpression(precedence);
                 left = new BinaryExpressionSyntax(left, operatorToken, right);
             }
 
@@ -317,7 +329,7 @@ namespace Compiler.CodeAnalysis.Syntax
                 case SyntaxKind.OpenParenthesisToken:
                 {
                     var open = NextToken();
-                    var expression = ParseExpression();
+                    var expression = ParseBinaryExpression();
                     var close = MatchToken(SyntaxKind.CloseParenthesisToken);
                     return new ParenthesizedExpressionSyntax(open, expression, close);
                 }
