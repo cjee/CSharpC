@@ -98,7 +98,7 @@ namespace Compiler.CodeAnalysis
             Report(typeIdentifier.TextSpan, message);
         }
 
-        public void ReportVaribleAlreadyDeclared(SyntaxToken identifier)
+        public void ReportVariableAlreadyDeclared(SyntaxToken identifier)
         {
             var message =
                 $"Variable with name '{identifier.Text}' is already declared'";

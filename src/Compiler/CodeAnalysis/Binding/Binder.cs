@@ -110,7 +110,7 @@ namespace Compiler.CodeAnalysis.Binding
             var variable = new VariableSymbol(identifier.Text, type);
             if (!scope.TryDeclareLocalVariable(variable))
             {
-                diagnostics.ReportVaribleAlreadyDeclared(identifier);
+                diagnostics.ReportVariableAlreadyDeclared(identifier);
             }
 
             return variable;
