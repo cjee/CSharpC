@@ -177,6 +177,7 @@ namespace Compiler.CodeAnalysis.Syntax
             {
                 SyntaxKind.TrueKeyword => true,
                 SyntaxKind.FalseKeyword => false,
+                SyntaxKind.Identifier => text,
                 _ => null,
             };
 
