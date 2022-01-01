@@ -112,9 +112,11 @@ namespace Compiler.CodeAnalysis.Binding
             {
                 diagnostics.ReportUndefinedType(syntax.Type);
             }
-            var initializer = syntax.Initializer != null ? BindExpression(syntax.Initializer) : type.DefaultInitializer;
-
+            
+            // Variable should be bound before the expression;
             var variable = BindVariable(syntax.Identifier, type);
+            var initializer = syntax.Initializer != null ? BindExpression(syntax.Initializer) : type.DefaultInitializer;
+            
             return new BoundLocalVariableDeclarationStatement(variable, initializer);
 
         }
