@@ -52,12 +52,32 @@ namespace Compiler.CodeAnalysis.Binding
                 case BoundNodeKind.VariableExpression:
                     writer.WriteVariableExpression((BoundVariableExpression)node);
                     break;
+                case BoundNodeKind.InvocationExpression:
+                    writer.WriteInvocationExpression((BoundInvocationExpression)node) ;
+                    break;
                 default:
                     throw new Exception($"Unrecognized bound node kind: {node.Kind}");
             }
         }
 
 
+        private static void WriteInvocationExpression(this IndentedTextWriter writer, BoundInvocationExpression node)
+        {
+            writer.Write($"{node.Method.Name}(");
+
+            if (node.Arguments.Count > 0)
+            {
+                writer.WriteNode(node.Arguments[0]);
+                for (int i = 1; i < node.Arguments.Count; i++)
+                {
+                    writer.WritePunctuation(SyntaxKind.CommaToken);
+                    writer.Write(" ");
+                    writer.WriteNode(node.Arguments[i]);
+                }
+            }
+            writer.Write(")");
+        }
+        
         private static void WriteErrorExpression(this IndentedTextWriter writer, BoundErrorExpression node)
         {
             writer.Write("_ErrorExpression_");
@@ -96,6 +116,7 @@ namespace Compiler.CodeAnalysis.Binding
             
             writer.Indent--;
             writer.WritePunctuation(SyntaxKind.CloseBraceToken);
+            writer.WriteLine();
         }
 
         private static void WriteLocalVariableDeclarationStatement(this IndentedTextWriter writer, BoundLocalVariableDeclarationStatement node)

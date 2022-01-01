@@ -188,7 +188,6 @@ namespace Compiler.CodeAnalysis.Binding
 
         public BoundExpression BindExpression(ExpressionSyntax expressionSyntax)
         {
-            
             switch (expressionSyntax.Kind)
             {
                 case SyntaxKind.NumericLiteralExpression:
@@ -204,12 +203,58 @@ namespace Compiler.CodeAnalysis.Binding
                 case SyntaxKind.AssignmentExpression:
                     return BindAssignmentExpression((AssignmentExpressionSyntax)expressionSyntax);
                 case SyntaxKind.InvocationExpression:
-                    throw new NotImplementedException();
+                    return BindInvocationExpression((InvocationExpressionSyntax)expressionSyntax);
                 case SyntaxKind.SimpleNameExpression:
                     return BindSimpleNameExpression((SimpleNameExpressionSyntax)expressionSyntax);
                 default:
                     throw new Exception($"Unexpected expression syntax kind: {expressionSyntax.Kind}");
             }
+        }
+
+        private BoundExpression BindInvocationExpression(InvocationExpressionSyntax syntax)
+        {
+            if (syntax.PrimaryExpression is not SimpleNameExpressionSyntax nameSyntax)
+            {
+                Diagnostics.ReportInvalidMethodInvocation(syntax.PrimaryExpression);
+                return new BoundErrorExpression();
+            }
+
+            var name = nameSyntax.Identifier.Text;
+
+            var boundArguments = ImmutableList.CreateBuilder<BoundExpression>();
+            foreach (var argument in syntax.Arguments)
+            {
+                var boundArgument = BindExpression(argument);
+                boundArguments.Add(boundArgument);
+            }
+
+            var method = scope.TryLookupMethod(name);
+            if (method is null)
+            {
+                Diagnostics.ReportUndefinedName(nameSyntax.Identifier);
+                return new BoundErrorExpression();
+            }
+
+            if (syntax.Arguments.Count != method.Parameters.Count)
+            {
+                Diagnostics.ReportArgumentCountMismatch(nameSyntax.Identifier, method.Parameters.Count, syntax.Arguments.Count);
+                return new BoundErrorExpression();
+            }
+
+            for (var i = 0; i < syntax.Arguments.Count; i++)
+            {
+                var argument = boundArguments[i];
+                var parameter = method.Parameters[i];
+                if (argument.Type != parameter.Type)
+                {
+                    diagnostics.ReportWrongArgumentType(syntax.Arguments[i].Span, parameter.Name, parameter.Type,
+                        argument.Type);
+                    return new BoundErrorExpression();
+                }
+            }
+
+
+            return new BoundInvocationExpression(method, boundArguments.ToImmutable());
         }
 
         private BoundExpression BindSimpleNameExpression(SimpleNameExpressionSyntax syntax)

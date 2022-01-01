@@ -118,5 +118,25 @@ namespace Compiler.CodeAnalysis
                 $"The name '{identifier.Text}' does not exist in current context'";
             Report(identifier.TextSpan, message);
         }
+
+        public void ReportInvalidMethodInvocation(ExpressionSyntax expression)
+        {
+            const string message = $"Invalid method invocation";
+            
+            Report(expression.Span, message);
+        }
+
+        public void ReportArgumentCountMismatch(SyntaxToken identifier, int parametersCount, int argumentsCount)
+        {
+            var message =
+                $"The method '{identifier.Text}' requires {parametersCount}' parameter{ (parametersCount == 1 ? "" : "s") } but invocation has {argumentsCount} parameter{ (argumentsCount == 1 ? "" : "s")}";
+            Report(identifier.TextSpan, message);
+        }
+
+        public void ReportWrongArgumentType(TextSpan span, string parameterName, TypeSymbol parameterType, TypeSymbol argumentType)
+        {
+            var message = $"Parameter '{parameterName}' requires a value of type '{parameterType.Name}' but was given a value of type '{argumentType.Name}'.";
+            Report(span, message);
+        }
     }
 }

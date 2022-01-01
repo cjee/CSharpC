@@ -66,4 +66,23 @@ internal class BoundScope
         variableSymbol = new VariableSymbol(name, TypeSymbol.Error);
         return false;
     }
+
+    public MethodSymbol? TryLookupMethod(string name)
+    {
+        var scope = this;
+        while (scope != null)
+        {
+            if (scope.symbols.ContainsKey(name))
+            {
+                var symbol = scope.symbols[name];
+                if (symbol is MethodSymbol method)
+                {
+                   return method;
+                }
+            }
+            scope = scope.Parent;
+        }
+
+        return null;
+    }
 }

@@ -286,7 +286,13 @@ namespace Compiler.CodeAnalysis.Syntax
                 {
                     case SyntaxKind.OpenParenthesisToken:
                         var open = NextToken();
-                        var arguments = ParseArgumentList();
+                        var arguments = SeperatedSyntaxList<ExpressionSyntax>.Empty();
+                        
+                        if(Current.Kind != SyntaxKind.CloseParenthesisToken)
+                        {
+                            arguments = ParseArgumentList();
+                        }
+
                         var close = MatchToken(SyntaxKind.CloseParenthesisToken);
                         expression = new InvocationExpressionSyntax(expression, open, arguments, close);
                         break;
