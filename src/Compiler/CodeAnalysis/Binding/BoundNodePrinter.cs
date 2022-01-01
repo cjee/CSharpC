@@ -46,11 +46,28 @@ namespace Compiler.CodeAnalysis.Binding
                 case BoundNodeKind.AssignmentExpression:
                     writer.WriteAssignmentExpression((BoundAssignmentExpression)node);
                     break;
+                case BoundNodeKind.ErrorExpression:
+                    writer.WriteErrorExpression(((BoundErrorExpression)node));
+                    break;
+                case BoundNodeKind.VariableExpression:
+                    writer.WriteVariableExpression((BoundVariableExpression)node);
+                    break;
                 default:
                     throw new Exception($"Unrecognized bound node kind: {node.Kind}");
             }
         }
 
+
+        private static void WriteErrorExpression(this IndentedTextWriter writer, BoundErrorExpression node)
+        {
+            writer.Write("_ErrorExpression_");
+        }
+
+        private static void WriteVariableExpression(this IndentedTextWriter writer, BoundVariableExpression node)
+        {
+            writer.Write(node.Variable.Name);
+        }
+        
         private static void WriteAssignmentExpression(this IndentedTextWriter writer, BoundAssignmentExpression node)
         {
             writer.Write($"{node.Variable.Name} ");

@@ -111,5 +111,12 @@ namespace Compiler.CodeAnalysis
                 $"Only assignment and call expressions can be used as a statement";
             Report(syntaxExpression.Span, message);
         }
+
+        public void ReportUndefinedName(SyntaxToken identifier)
+        {
+            var message =
+                $"The name '{identifier.Text}' does not exist in current context'";
+            Report(identifier.TextSpan, message);
+        }
     }
 }

@@ -203,9 +203,26 @@ namespace Compiler.CodeAnalysis.Binding
                     return BindAssignmentExpression((AssignmentExpressionSyntax)expressionSyntax);
                 case SyntaxKind.InvocationExpression:
                     throw new NotImplementedException();
+                case SyntaxKind.SimpleNameExpression:
+                    return BindSimpleNameExpression((SimpleNameExpressionSyntax)expressionSyntax);
                 default:
                     throw new Exception($"Unexpected expression syntax kind: {expressionSyntax.Kind}");
             }
+        }
+
+        private BoundExpression BindSimpleNameExpression(SimpleNameExpressionSyntax syntax)
+        {
+            var name = syntax.Identifier.Text;
+            if (string.IsNullOrEmpty(name))
+                return new BoundErrorExpression();
+            
+            if(!scope.TryLookupVariable(name, out VariableSymbol variable))
+            {
+                diagnostics.ReportUndefinedName(syntax.Identifier);
+                return new BoundErrorExpression();
+            }
+
+            return new BoundVariableExpression(variable);
         }
 
         private BoundAssignmentExpression BindAssignmentExpression(
