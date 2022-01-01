@@ -202,7 +202,7 @@ namespace Compiler.CodeAnalysis.Syntax
         {
             var expression = ParseAssignmentExpression();
             var semicolon = MatchToken(SyntaxKind.SemicolonToken);
-            return new ExpressionStatementSyntaxSyntax(expression, semicolon);
+            return new ExpressionStatementSyntax(expression, semicolon);
         }
 
         private ExpressionSyntax ParseAssignmentExpression()

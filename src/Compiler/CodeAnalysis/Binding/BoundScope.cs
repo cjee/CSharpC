@@ -45,4 +45,25 @@ internal class BoundScope
         symbols.Add(variable.Name, variable);
         return true;
     }
+
+    public bool TryLookupVariable(string name, out VariableSymbol variableSymbol)
+    {
+        var scope = this;
+        while (scope != null)
+        {
+            if (scope.symbols.ContainsKey(name))
+            {
+                var symbol = scope.symbols[name];
+                if (symbol is VariableSymbol variable)
+                {
+                    variableSymbol = variable;
+                    return true;
+                }
+            }
+            scope = scope.Parent;
+        }
+
+        variableSymbol = new VariableSymbol(name, TypeSymbol.Error);
+        return false;
+    }
 }

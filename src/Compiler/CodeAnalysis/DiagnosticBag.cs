@@ -14,16 +14,16 @@ namespace Compiler.CodeAnalysis
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public void AddRange(DiagnosticBag bag) => diagnostics.AddRange(bag.diagnostics);
-        
+
         private void Report(TextSpan span, string message) => diagnostics.Add(new Diagnostic(span, message));
-        
+
         public void ReportBadCharacter(int position, char current)
         {
             var span = new TextSpan(position, 1);
             var message = $"Unexpected character '{current}'";
             Report(span, message);
         }
-        
+
         public void ReportBadToken(int start, int length, string text)
         {
             var span = new TextSpan(start, length);
@@ -103,6 +103,13 @@ namespace Compiler.CodeAnalysis
             var message =
                 $"Variable with name '{identifier.Text}' is already declared'";
             Report(identifier.TextSpan, message);
+        }
+
+        public void ReportOnlyAssignmentOrInvocationExpressionAllowed(ExpressionSyntax syntaxExpression)
+        {
+            const string message =
+                $"Only assignment and call expressions can be used as a statement";
+            Report(syntaxExpression.Span, message);
         }
     }
 }

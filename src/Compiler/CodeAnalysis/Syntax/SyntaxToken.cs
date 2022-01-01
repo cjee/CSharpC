@@ -22,6 +22,8 @@ namespace Compiler.CodeAnalysis.Syntax
 
         public TextSpan TextSpan => new(Position, Text.Length);
 
+        public override TextSpan Span => TextSpan;
+
         public override IEnumerable<SyntaxNode> GetChildren()
         {
             return Enumerable.Empty<SyntaxNode>();

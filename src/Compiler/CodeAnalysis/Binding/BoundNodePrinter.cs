@@ -40,11 +40,31 @@ namespace Compiler.CodeAnalysis.Binding
                 case BoundNodeKind.BoundEmptyStatement:
                     writer.WritePunctuation(SyntaxKind.SemicolonToken);
                     break;
+                case BoundNodeKind.BoundExpressionStatement:
+                    writer.WriteBoundExpressions((BoundExpressionStatement)node);
+                    break;
+                case BoundNodeKind.AssignmentExpression:
+                    writer.WriteAssignmentExpression((BoundAssignmentExpression)node);
+                    break;
                 default:
                     throw new Exception($"Unrecognized bound node kind: {node.Kind}");
             }
         }
 
+        private static void WriteAssignmentExpression(this IndentedTextWriter writer, BoundAssignmentExpression node)
+        {
+            writer.Write($"{node.Variable.Name} ");
+            writer.WritePunctuation(SyntaxKind.EqualsToken);
+            writer.Write(" ");
+            writer.WriteNode(node.Expression);
+        }
+
+        
+        private static void WriteBoundExpressions(this IndentedTextWriter writer, BoundExpressionStatement node)
+        {
+            writer.WriteNode(node.Expression);
+        }
+        
         private static void WriteBlockStatement(this IndentedTextWriter writer, BoundBlockStatement node)
         {
             writer.WritePunctuation(SyntaxKind.OpenBraceToken);

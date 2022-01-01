@@ -11,5 +11,7 @@ namespace Compiler.CodeAnalysis.Binding
         BoundBlockStatement,
         BoundEmptyStatement,
         BoundLocalVariableDeclarationStatement,
+        BoundExpressionStatement,
+        AssignmentExpression,
     }
 }

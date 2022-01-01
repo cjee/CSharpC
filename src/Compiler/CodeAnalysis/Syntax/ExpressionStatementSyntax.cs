@@ -2,12 +2,12 @@ using System.Collections.Generic;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public sealed class ExpressionStatementSyntaxSyntax : StatementSyntax
+    public sealed class ExpressionStatementSyntax : StatementSyntax
     {
         public ExpressionSyntax Expression { get; }
         public SyntaxNode Semicolon { get; }
 
-        public ExpressionStatementSyntaxSyntax(ExpressionSyntax expression, SyntaxNode semicolon)
+        public ExpressionStatementSyntax(ExpressionSyntax expression, SyntaxNode semicolon)
         {
             Expression = expression;
             Semicolon = semicolon;

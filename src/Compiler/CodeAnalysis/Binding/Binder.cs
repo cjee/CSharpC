@@ -81,9 +81,23 @@ namespace Compiler.CodeAnalysis.Binding
             {
                 SyntaxKind.LocalVariableDeclarationStatement => BindLocalVariableDeclarationStatement((LocalVariableDeclarationStatementSyntax)syntax),
                 SyntaxKind.BlockStatement => BindBlockStatement((BlockStatementSyntax)syntax),
+                SyntaxKind.ExpressionStatement => BindExpressionStatement((ExpressionStatementSyntax)syntax),
                 SyntaxKind.EmptyStatement => new BoundEmptyStatement(),
                 _ => throw new Exception($"Unexpected syntax {syntax.Kind}"),
             };
+        }
+
+        private BoundStatment BindExpressionStatement(ExpressionStatementSyntax syntax)
+        {
+            if (syntax.Expression is not AssignmentExpressionSyntax && syntax.Expression is not InvocationExpressionSyntax)
+            {
+                diagnostics.ReportOnlyAssignmentOrInvocationExpressionAllowed(syntax.Expression);
+                return new BoundEmptyStatement();
+            }
+
+            var expression = BindExpression(syntax.Expression);
+            
+            return new BoundExpressionStatement(expression);
         }
 
         private BoundLocalVariableDeclarationStatement BindLocalVariableDeclarationStatement(
@@ -185,9 +199,26 @@ namespace Compiler.CodeAnalysis.Binding
                     return BindBinaryExpression((BinaryExpressionSyntax)expressionSyntax);
                 case SyntaxKind.ParenthesizedExpression:
                     return BindParenthesizedExpression((ParenthesizedExpressionSyntax)expressionSyntax);
+                case SyntaxKind.AssignmentExpression:
+                    return BindAssignmentExpression((AssignmentExpressionSyntax)expressionSyntax);
+                case SyntaxKind.InvocationExpression:
+                    throw new NotImplementedException();
                 default:
                     throw new Exception($"Unexpected expression syntax kind: {expressionSyntax.Kind}");
             }
+        }
+
+        private BoundAssignmentExpression BindAssignmentExpression(
+            AssignmentExpressionSyntax syntax)
+        {
+            var variableName = syntax.Identifier.Text;
+            if (!scope.TryLookupVariable(variableName, out VariableSymbol variable))
+            {
+                
+            }
+
+            var expression = BindExpression(syntax.Right);
+            return new BoundAssignmentExpression(variable, expression);
         }
 
         private BoundExpression BindBinaryExpression(BinaryExpressionSyntax expressionsSyntax)
