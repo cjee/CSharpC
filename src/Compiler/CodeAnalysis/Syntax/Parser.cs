@@ -333,14 +333,14 @@ namespace Compiler.CodeAnalysis.Syntax
                     var close = MatchToken(SyntaxKind.CloseParenthesisToken);
                     return new ParenthesizedExpressionSyntax(open, expression, close);
                 }
-                case SyntaxKind.Identifier:
-                    return new SimpleNameExpressionSyntax(NextToken());
+                
                 case SyntaxKind.FalseKeyword or SyntaxKind.TrueKeyword:
                     return new BooleanLiteralExpressionSyntax(NextToken());
                 case SyntaxKind.IntegerLiteralToken:
                     return new NumericLiteralExpressionSyntax(NextToken());
+                case SyntaxKind.Identifier:
                 default:
-                    return new EmptyExpressionSyntax();
+                    return new SimpleNameExpressionSyntax(MatchToken(SyntaxKind.Identifier));
             }
         }
     }
