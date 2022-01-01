@@ -231,7 +231,7 @@ namespace Compiler.CodeAnalysis.Binding
             var variableName = syntax.Identifier.Text;
             if (!scope.TryLookupVariable(variableName, out VariableSymbol variable))
             {
-                
+                diagnostics.ReportUndefinedName(syntax.Identifier);
             }
 
             var expression = BindExpression(syntax.Right);
