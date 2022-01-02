@@ -26,6 +26,13 @@ namespace Compiler.CodeAnalysis.Syntax
                 SyntaxKind.SemicolonToken => ";",
                 SyntaxKind.DotToken => ".",
                 SyntaxKind.CommaToken => ",",
+                
+                SyntaxKind.FalseKeyword => "false",
+                SyntaxKind.TrueKeyword => "true",
+                SyntaxKind.VoidKeyword => "void",
+                SyntaxKind.BoolKeyword => "bool",
+                SyntaxKind.IntKeyword => "int",
+                SyntaxKind.ReturnKeyword => "return",
                 _ => string.Empty,
             };
         }

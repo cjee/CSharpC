@@ -38,7 +38,7 @@ namespace Compiler.CodeAnalysis.Binding
                     writer.WriteLocalVariableDeclarationStatement((BoundLocalVariableDeclarationStatement)node);
                     break;
                 case BoundNodeKind.BoundEmptyStatement:
-                    writer.WritePunctuation(SyntaxKind.SemicolonToken);
+                    writer.WriteToken(SyntaxKind.SemicolonToken);
                     break;
                 case BoundNodeKind.BoundExpressionStatement:
                     writer.WriteBoundExpressions((BoundExpressionStatement)node);
@@ -70,7 +70,7 @@ namespace Compiler.CodeAnalysis.Binding
                 writer.WriteNode(node.Arguments[0]);
                 for (int i = 1; i < node.Arguments.Count; i++)
                 {
-                    writer.WritePunctuation(SyntaxKind.CommaToken);
+                    writer.WriteToken(SyntaxKind.CommaToken);
                     writer.Write(" ");
                     writer.WriteNode(node.Arguments[i]);
                 }
@@ -91,7 +91,7 @@ namespace Compiler.CodeAnalysis.Binding
         private static void WriteAssignmentExpression(this IndentedTextWriter writer, BoundAssignmentExpression node)
         {
             writer.Write($"{node.Variable.Name} ");
-            writer.WritePunctuation(SyntaxKind.EqualsToken);
+            writer.WriteToken(SyntaxKind.EqualsToken);
             writer.Write(" ");
             writer.WriteNode(node.Expression);
         }
@@ -104,7 +104,7 @@ namespace Compiler.CodeAnalysis.Binding
         
         private static void WriteBlockStatement(this IndentedTextWriter writer, BoundBlockStatement node)
         {
-            writer.WritePunctuation(SyntaxKind.OpenBraceToken);
+            writer.WriteToken(SyntaxKind.OpenBraceToken);
             writer.WriteLine();
             writer.Indent++;
 
@@ -115,7 +115,7 @@ namespace Compiler.CodeAnalysis.Binding
             }
             
             writer.Indent--;
-            writer.WritePunctuation(SyntaxKind.CloseBraceToken);
+            writer.WriteToken(SyntaxKind.CloseBraceToken);
             writer.WriteLine();
         }
 
@@ -133,7 +133,7 @@ namespace Compiler.CodeAnalysis.Binding
         {
             var precedence = node.BoundOperator.SyntaxKind.GetUnaryOperatorPrecedence();
 
-            writer.WritePunctuation(node.BoundOperator.SyntaxKind);
+            writer.WriteToken(node.BoundOperator.SyntaxKind);
             writer.WriteNestedExpression(node.BoundOperand, precedence);
         }
 
@@ -143,7 +143,7 @@ namespace Compiler.CodeAnalysis.Binding
 
             writer.WriteNestedExpression(node.LeftOperand, precedence);
             writer.WriteSpace();
-            writer.WritePunctuation(node.BoundOperator.SyntaxKind);
+            writer.WriteToken(node.BoundOperator.SyntaxKind);
             writer.WriteSpace();
             writer.WriteNestedExpression(node.RightOperand, precedence);
         }
@@ -184,18 +184,18 @@ namespace Compiler.CodeAnalysis.Binding
         {
             var needParenthesis = parentPrecedence >= currentPrecedence;
             if (needParenthesis)
-                writer.WritePunctuation(SyntaxKind.OpenParenthesisToken);
+                writer.WriteToken(SyntaxKind.OpenParenthesisToken);
 
             expression.WriteTo(writer);
             if (needParenthesis)
-                writer.WritePunctuation(SyntaxKind.CloseParenthesisToken);
+                writer.WriteToken(SyntaxKind.CloseParenthesisToken);
         }
 
-        private static void WritePunctuation(this IndentedTextWriter writer, SyntaxKind kind)
+        private static void WriteToken(this IndentedTextWriter writer, SyntaxKind kind)
         {
             writer.Write(SyntaxFacts.GetText(kind));
         }
-
+        
         private static void WriteSpace(this IndentedTextWriter writer)
         {
             writer.Write(" ");
