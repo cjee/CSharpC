@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Diagnostics;
+using System.Linq;
 using Compiler.CodeAnalysis.Symbols;
 using Compiler.CodeAnalysis.Syntax;
 
@@ -9,6 +9,7 @@ namespace Compiler.CodeAnalysis.Binding
 {
     public class Binder
     {
+        public MethodSymbol? Method { get; }
         private DiagnosticBag diagnostics = new();
 
         public DiagnosticBag Diagnostics => diagnostics;
@@ -16,6 +17,7 @@ namespace Compiler.CodeAnalysis.Binding
         private BoundScope scope;
         private Binder(BoundScope parentScope, MethodSymbol? method)
         {
+            Method = method;
             scope = new BoundScope(parentScope);
             if (method != null)
             {
@@ -54,6 +56,10 @@ namespace Compiler.CodeAnalysis.Binding
                 
                 methodBodies.Add(method, body);
                 diagnostics.AddRange(binder.diagnostics);
+                
+                // no flow logic hence this is enough for now
+                if (method.Type != TypeSymbol.Void && body.Statements.OfType<BoundReturnStatement>().Count() == 0)
+                    diagnostics.ReportNoReturnStatement(method.Declaration.MemberName);
             }
 
             return new BoundProgram(diagnostics, methodBodies.ToImmutable());
@@ -82,9 +88,40 @@ namespace Compiler.CodeAnalysis.Binding
                 SyntaxKind.LocalVariableDeclarationStatement => BindLocalVariableDeclarationStatement((LocalVariableDeclarationStatementSyntax)syntax),
                 SyntaxKind.BlockStatement => BindBlockStatement((BlockStatementSyntax)syntax),
                 SyntaxKind.ExpressionStatement => BindExpressionStatement((ExpressionStatementSyntax)syntax),
+                SyntaxKind.ReturnStatement => BindReturnStatement((ReturnStatementSyntax)syntax),
                 SyntaxKind.EmptyStatement => new BoundEmptyStatement(),
                 _ => throw new Exception($"Unexpected syntax {syntax.Kind}"),
             };
+        }
+
+        private BoundStatment BindReturnStatement(ReturnStatementSyntax syntax)
+        {
+            // As we don't have global statements yet then we should not be able to invoke
+            // this without passing Method parameter to Binder constructor
+            if (Method is null)
+            {
+                throw new Exception("Trying to bind return statement outside of method body");
+            }
+            var boundExpression = syntax.Expression is null ? null : BindExpression(syntax.Expression);
+
+            if (Method.Type == TypeSymbol.Void)
+            {
+                if (boundExpression != null)
+                    Diagnostics.ReportInvalidReturnExpression(syntax.Expression!, Method!);
+
+            }
+            else
+            {
+                if (boundExpression == null)
+                    Diagnostics.ReportMissingReturnExpression(syntax.ReturnKeyword, Method.Type);
+                else
+                {
+                    if (Method.Type != boundExpression.Type)
+                        Diagnostics.ReportInvalidReturnExpression(syntax.Expression!, Method!, boundExpression.Type);
+                }
+            }
+
+            return new BoundReturnStatement(boundExpression);
         }
 
         private BoundStatment BindExpressionStatement(ExpressionStatementSyntax syntax)

@@ -55,11 +55,22 @@ namespace Compiler.CodeAnalysis.Binding
                 case BoundNodeKind.InvocationExpression:
                     writer.WriteInvocationExpression((BoundInvocationExpression)node) ;
                     break;
+                case BoundNodeKind.ReturnStatement:
+                    writer.WriteReturnStatement((BoundReturnStatement)node) ;
+                    break;
                 default:
                     throw new Exception($"Unrecognized bound node kind: {node.Kind}");
             }
         }
 
+        private static void WriteReturnStatement(this IndentedTextWriter writer, BoundReturnStatement node)
+        {
+            writer.WriteToken(SyntaxKind.ReturnKeyword);
+            writer.Write(" ");
+            if(node.BoundExpression is not null)
+                writer.WriteNode(node.BoundExpression);
+            writer.WriteLine();
+        }
 
         private static void WriteInvocationExpression(this IndentedTextWriter writer, BoundInvocationExpression node)
         {

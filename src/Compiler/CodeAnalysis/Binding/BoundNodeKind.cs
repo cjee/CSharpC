@@ -16,5 +16,6 @@ namespace Compiler.CodeAnalysis.Binding
         BoundExpressionStatement,
         AssignmentExpression,
         InvocationExpression,
+        ReturnStatement,
     }
 }

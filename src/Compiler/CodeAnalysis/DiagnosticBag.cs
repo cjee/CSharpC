@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Compiler.CodeAnalysis.Binding;
 using Compiler.CodeAnalysis.Symbols;
 using Compiler.CodeAnalysis.Syntax;
 using Compiler.CodeAnalysis.Text;
@@ -137,6 +138,33 @@ namespace Compiler.CodeAnalysis
         {
             var message = $"Parameter '{parameterName}' requires a value of type '{parameterType.Name}' but was given a value of type '{argumentType.Name}'.";
             Report(span, message);
+        }
+
+        public void ReportInvalidReturnExpression(ExpressionSyntax expression, MethodSymbol method)
+        {
+            var message =
+                    $"Since function '{method.Name}' does not return value the 'return' keyword cant be followed by an expression";
+            Report(expression.Span, message);
+        }
+        
+        public void ReportInvalidReturnExpression(ExpressionSyntax expression, MethodSymbol method, TypeSymbol type)
+        {
+            var message =
+                    $"Function '{method.Name}' has return type '{method.Type.Name}' but returned expression is of type '{type.Name}'";
+            
+            Report(expression.Span, message);
+        }
+
+        public void ReportMissingReturnExpression(SyntaxToken syntaxReturnKeyword, TypeSymbol methodType)
+        {
+            var message = $"A return expression of type '{methodType.Name}' is expected";
+            Report(syntaxReturnKeyword.TextSpan, message);
+        }
+
+        public void ReportNoReturnStatement(SyntaxToken declarationMemberName)
+        {
+            var message = $"A function '{declarationMemberName.Text}' does not return value";
+            Report(declarationMemberName.TextSpan, message);
         }
     }
 }
