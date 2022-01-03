@@ -153,6 +153,10 @@ namespace Compiler.CodeAnalysis.Binding
             // Variable should be bound before the expression;
             var variable = BindVariable(syntax.Identifier, type);
             var initializer = syntax.Initializer != null ? BindExpression(syntax.Initializer) : type.DefaultInitializer;
+
+            if (initializer is not null && initializer.Type != variable.Type)
+                Diagnostics.ReportCannotAssignType(syntax.Initializer!, type, initializer.Type);
+            
             
             return new BoundLocalVariableDeclarationStatement(variable, initializer);
 
@@ -323,6 +327,13 @@ namespace Compiler.CodeAnalysis.Binding
             }
 
             var expression = BindExpression(syntax.Right);
+
+            if (variable.Type != TypeSymbol.Error && expression is not BoundErrorExpression)
+            {
+                if(variable.Type != expression.Type)
+                    diagnostics.ReportCannotAssignType(syntax.Right, variable.Type, expression.Type);
+            }
+            
             return new BoundAssignmentExpression(variable, expression);
         }
 

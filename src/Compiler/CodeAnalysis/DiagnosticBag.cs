@@ -172,5 +172,11 @@ namespace Compiler.CodeAnalysis
             var message = $"Invalid parameter type '{parameterType.Name}'";
             Report(parameterIdentifier.Span, message);
         }
+
+        public void ReportCannotAssignType(ExpressionSyntax syntaxInitializer, TypeSymbol expectedType, TypeSymbol actualType)
+        {
+            var message = $"Cannot assign '{actualType.Name}' to '{expectedType.Name}'";
+            Report(syntaxInitializer.Span, message);
+        }
     }
 }
