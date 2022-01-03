@@ -34,7 +34,7 @@ namespace Compiler.CodeAnalysis.Binding
 
             foreach (var method in syntax.Methods)
             {
-                binder.BindFunctionDeclaration(method);
+                binder.BindMethodDeclaration(method);
             }
 
             var methods = binder.scope.GetDeclaredMethods();
@@ -180,7 +180,7 @@ namespace Compiler.CodeAnalysis.Binding
             return scope;
         }
 
-        private void BindFunctionDeclaration(MethodDeclarationSyntax syntax)
+        private void BindMethodDeclaration(MethodDeclarationSyntax syntax)
         {
             var parameters = ImmutableList.CreateBuilder<ParameterSymbol>();
             var seenParameterNames = new HashSet<string>();
