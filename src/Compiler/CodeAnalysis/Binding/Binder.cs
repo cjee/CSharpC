@@ -189,6 +189,10 @@ namespace Compiler.CodeAnalysis.Binding
             {
                 var parameterName = parameter.Identifier.Text;
                 var parameterType = BindTypeClause(parameter.Type);
+
+                if (parameterType == TypeSymbol.Void)
+                    diagnostics.ReportInvalidParameterType(parameter.Identifier, parameterType);
+                
                 if (!seenParameterNames.Add(parameterName))
                     diagnostics.ReportParameterAlreadyDeclared(parameter.Identifier);
                 else

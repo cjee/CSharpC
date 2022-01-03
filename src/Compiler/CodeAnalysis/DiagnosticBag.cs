@@ -166,5 +166,11 @@ namespace Compiler.CodeAnalysis
             var message = $"A function '{declarationMemberName.Text}' does not return value";
             Report(declarationMemberName.TextSpan, message);
         }
+
+        public void ReportInvalidParameterType(SyntaxToken parameterIdentifier, TypeSymbol parameterType)
+        {
+            var message = $"Invalid parameter type '{parameterType.Name}'";
+            Report(parameterIdentifier.Span, message);
+        }
     }
 }
