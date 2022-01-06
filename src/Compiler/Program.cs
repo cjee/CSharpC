@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using Compiler.CodeAnalysis;
 using Compiler.CodeAnalysis.Binding;
+using Compiler.CodeAnalysis.Emit;
 using Compiler.CodeAnalysis.Syntax;
 
 namespace Compiler
@@ -54,6 +55,13 @@ namespace Compiler
                     Console.ResetColor();
                 }
 
+
+                if(!diagnostics.Any())
+                {
+                    var emiter = new Emitter(Console.Out);
+                    emiter.EmitGlobalScope(globalScope);
+                }
+                
                 textBuilder.Clear();
             }
         }
