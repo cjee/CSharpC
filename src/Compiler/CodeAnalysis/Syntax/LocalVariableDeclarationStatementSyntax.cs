@@ -10,8 +10,6 @@ namespace Compiler.CodeAnalysis.Syntax
             ExpressionSyntax? Initializer,
             SyntaxToken Semicolon) : StatementSyntax
     {
-        public override SyntaxKind Kind => SyntaxKind.LocalVariableDeclarationStatement;
-
         public override IEnumerable<SyntaxNode> GetChildren()
         {
             yield return Type;

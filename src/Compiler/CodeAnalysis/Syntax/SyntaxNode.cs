@@ -6,7 +6,7 @@ namespace Compiler.CodeAnalysis.Syntax
 {
     public abstract record SyntaxNode
     {
-        public abstract SyntaxKind Kind { get; }
+        public virtual SyntaxKind Kind => SyntaxFacts.GetSyntaxKindFromType(this);
         public abstract IEnumerable<SyntaxNode> GetChildren();
 
         public virtual TextSpan Span

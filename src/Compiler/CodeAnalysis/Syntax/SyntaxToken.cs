@@ -4,9 +4,9 @@ using Compiler.CodeAnalysis.Text;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public sealed record SyntaxToken(SyntaxKind Kind, int Position, string Text, object? Value) : SyntaxNode
+    public sealed record SyntaxToken(SyntaxKind TokenKind, int Position, string Text, object? Value) : SyntaxNode
     {
-        public override SyntaxKind Kind { get; } = Kind;
+        public override SyntaxKind Kind => TokenKind;
 
         public TextSpan TextSpan => new(Position, Text.Length);
 

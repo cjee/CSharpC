@@ -1,3 +1,5 @@
+using System;
+
 namespace Compiler.CodeAnalysis.Syntax
 {
     public static class SyntaxFacts
@@ -100,5 +102,27 @@ namespace Compiler.CodeAnalysis.Syntax
                 _ => false,
             };
         }
+
+        public static SyntaxKind GetSyntaxKindFromType<T>(T type) => type switch
+        {
+            AssignmentExpressionSyntax => SyntaxKind.AssignmentExpression,
+            BinaryExpressionSyntax => SyntaxKind.BinaryExpression,
+            BlockStatementSyntax => SyntaxKind.BlockStatement,
+            BooleanLiteralExpressionSyntax => SyntaxKind.BooleanLiteralExpression,
+            CompilationUnit => SyntaxKind.CompilationUnit,
+            EmptyStatementSyntax => SyntaxKind.EmptyStatement,
+            ExpressionStatementSyntax => SyntaxKind.ExpressionStatement,
+            InvocationExpressionSyntax => SyntaxKind.InvocationExpression,
+            LocalVariableDeclarationStatementSyntax => SyntaxKind.LocalVariableDeclarationStatement,
+            MethodDeclarationSyntax => SyntaxKind.MethodDeclaration,
+            NumericLiteralExpressionSyntax => SyntaxKind.NumericLiteralExpression,
+            ParameterSyntax => SyntaxKind.Parameter,
+            ParenthesizedExpressionSyntax => SyntaxKind.ParenthesizedExpression,
+            ReturnStatementSyntax => SyntaxKind.ReturnStatement,
+            SimpleNameExpressionSyntax => SyntaxKind.SimpleNameExpression,
+            TypeSyntax => SyntaxKind.Type,
+            UnaryExpressionSyntax => SyntaxKind.UnaryExpression,
+            _ => throw new ArgumentException($"The type {nameof(T)} does not have corresponding SyntaxKind"),
+        };
     }
 }

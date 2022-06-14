@@ -8,8 +8,6 @@ namespace Compiler.CodeAnalysis.Syntax
             SeperatedSyntaxList<ExpressionSyntax> Arguments,
             SyntaxToken CloseParenthesis) : ExpressionSyntax
     {
-        public override SyntaxKind Kind => SyntaxKind.InvocationExpression;
-
         public override IEnumerable<SyntaxNode> GetChildren()
         {
             yield return PrimaryExpression;

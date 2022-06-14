@@ -4,8 +4,6 @@ namespace Compiler.CodeAnalysis.Syntax
 {
     public sealed record ReturnStatementSyntax(SyntaxToken ReturnKeyword, ExpressionSyntax? Expression, SyntaxToken Semicolon) : StatementSyntax
     {
-        public override SyntaxKind Kind => SyntaxKind.ReturnStatement;
-
         public override IEnumerable<SyntaxNode> GetChildren()
         {
             yield return ReturnKeyword;

@@ -11,8 +11,6 @@ namespace Compiler.CodeAnalysis.Syntax
             BlockStatementSyntax Body
         ) : SyntaxNode
     {
-        public override SyntaxKind Kind => SyntaxKind.MethodDeclaration;
-
         public override IEnumerable<SyntaxNode> GetChildren()
         {
             yield return ReturnType;

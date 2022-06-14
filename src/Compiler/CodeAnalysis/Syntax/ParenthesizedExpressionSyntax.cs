@@ -7,8 +7,6 @@ namespace Compiler.CodeAnalysis.Syntax
             ExpressionSyntax Expression,
             SyntaxToken CloseParenthesis) : ExpressionSyntax
     {
-        public override SyntaxKind Kind => SyntaxKind.ParenthesizedExpression;
-
         public override IEnumerable<SyntaxNode> GetChildren()
         {
             yield return OpenParenthesis;

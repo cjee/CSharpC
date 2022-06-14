@@ -9,8 +9,6 @@ namespace Compiler.CodeAnalysis.Syntax
         )
         : SyntaxNode
     {
-        public override SyntaxKind Kind => SyntaxKind.CompilationUnit;
-
         public override IEnumerable<SyntaxNode> GetChildren()
         {
             foreach (var method in Methods)
