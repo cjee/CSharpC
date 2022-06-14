@@ -2,31 +2,15 @@ using System.Collections.Generic;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public sealed class MethodDeclarationSyntax : SyntaxNode
+    public sealed record MethodDeclarationSyntax(
+            TypeSyntax ReturnType,
+            SyntaxToken MemberName,
+            SyntaxToken OpenParenthesis,
+            SeperatedSyntaxList<ParameterSyntax> Parameters,
+            SyntaxToken CloseParenthesis,
+            BlockStatementSyntax Body
+        ) : SyntaxNode
     {
-        public TypeSyntax ReturnType { get; }
-        public SyntaxToken MemberName { get; }
-        public SyntaxToken OpenParenthesis { get; }
-        public SeperatedSyntaxList<ParameterSyntax> Parameters { get; }
-        public SyntaxToken CloseParenthesis { get; }
-        public BlockStatementSyntax Body { get; }
-
-        public MethodDeclarationSyntax(
-            TypeSyntax returnType,
-            SyntaxToken memberName,
-            SyntaxToken openParenthesis,
-            SeperatedSyntaxList<ParameterSyntax> parameters,
-            SyntaxToken closeParenthesis,
-            BlockStatementSyntax body)
-        {
-            ReturnType = returnType;
-            MemberName = memberName;
-            OpenParenthesis = openParenthesis;
-            Parameters = parameters;
-            CloseParenthesis = closeParenthesis;
-            Body = body;
-        }
-
         public override SyntaxKind Kind => SyntaxKind.MethodDeclaration;
 
         public override IEnumerable<SyntaxNode> GetChildren()

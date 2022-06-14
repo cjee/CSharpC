@@ -2,19 +2,8 @@
 
 namespace Compiler.CodeAnalysis.Syntax;
 
-internal class AssignmentExpressionSyntax : ExpressionSyntax
-{
-    public SyntaxToken Identifier { get; }
-    public SyntaxToken OperatorToken { get; }
-    public ExpressionSyntax Right { get; }
-
-    public AssignmentExpressionSyntax(SyntaxToken identifier, SyntaxToken operatorToken, ExpressionSyntax right)
-    {
-        Identifier = identifier;
-        OperatorToken = operatorToken;
-        Right = right;
-    }
-
+public sealed record AssignmentExpressionSyntax(SyntaxToken Identifier, SyntaxToken OperatorToken, ExpressionSyntax Right) : ExpressionSyntax
+{ 
     public override SyntaxKind Kind => SyntaxKind.AssignmentExpression;
     public override IEnumerable<SyntaxNode> GetChildren()
     {

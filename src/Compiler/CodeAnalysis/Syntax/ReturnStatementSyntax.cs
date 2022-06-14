@@ -2,19 +2,8 @@ using System.Collections.Generic;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    internal class ReturnStatementSyntax : StatementSyntax
+    public sealed record ReturnStatementSyntax(SyntaxToken ReturnKeyword, ExpressionSyntax? Expression, SyntaxToken Semicolon) : StatementSyntax
     {
-        public SyntaxToken ReturnKeyword { get; }
-        public ExpressionSyntax? Expression { get; }
-        public SyntaxToken Semicolon { get; }
-
-        public ReturnStatementSyntax(SyntaxToken returnKeyword, ExpressionSyntax? expression, SyntaxToken semicolon)
-        {
-            ReturnKeyword = returnKeyword;
-            Expression = expression;
-            Semicolon = semicolon;
-        }
-
         public override SyntaxKind Kind => SyntaxKind.ReturnStatement;
 
         public override IEnumerable<SyntaxNode> GetChildren()

@@ -2,17 +2,8 @@ using System.Collections.Generic;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public sealed class ExpressionStatementSyntax : StatementSyntax
+    public sealed record ExpressionStatementSyntax(ExpressionSyntax Expression, SyntaxNode Semicolon) : StatementSyntax
     {
-        public ExpressionSyntax Expression { get; }
-        public SyntaxNode Semicolon { get; }
-
-        public ExpressionStatementSyntax(ExpressionSyntax expression, SyntaxNode semicolon)
-        {
-            Expression = expression;
-            Semicolon = semicolon;
-        }
-
         public override SyntaxKind Kind => SyntaxKind.ExpressionStatement;
 
         public override IEnumerable<SyntaxNode> GetChildren()

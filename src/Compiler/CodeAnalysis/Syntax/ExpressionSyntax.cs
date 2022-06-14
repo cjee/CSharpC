@@ -1,6 +1,6 @@
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public abstract class ExpressionSyntax : SyntaxNode
+    public abstract record ExpressionSyntax : SyntaxNode
     {
     }
 }

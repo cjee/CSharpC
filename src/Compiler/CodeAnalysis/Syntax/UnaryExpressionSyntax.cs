@@ -2,16 +2,8 @@ using System.Collections.Generic;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public sealed class UnaryExpressionSyntax : ExpressionSyntax
+    public sealed record UnaryExpressionSyntax(SyntaxToken OperatorToken, ExpressionSyntax Operand) : ExpressionSyntax
     {
-        public UnaryExpressionSyntax(SyntaxToken operatorToken, ExpressionSyntax operand)
-        {
-            OperatorToken = operatorToken;
-            Operand = operand;
-        }
-
-        public SyntaxToken OperatorToken { get; }
-        public ExpressionSyntax Operand { get; }
         public override SyntaxKind Kind => SyntaxKind.UnaryExpression;
 
         public override IEnumerable<SyntaxNode> GetChildren()

@@ -4,7 +4,7 @@ using Compiler.CodeAnalysis.Text;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public abstract class SyntaxNode
+    public abstract record SyntaxNode
     {
         public abstract SyntaxKind Kind { get; }
         public abstract IEnumerable<SyntaxNode> GetChildren();

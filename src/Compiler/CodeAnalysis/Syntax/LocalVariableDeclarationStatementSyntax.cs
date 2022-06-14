@@ -3,31 +3,13 @@ using System.Collections.Generic;
 
 namespace Compiler.CodeAnalysis.Syntax
 {
-    public sealed class  LocalVariableDeclarationStatementSyntax : StatementSyntax
+    public sealed record  LocalVariableDeclarationStatementSyntax(
+            TypeSyntax Type,
+            SyntaxToken Identifier,
+            SyntaxToken? EqualsToken,
+            ExpressionSyntax? Initializer,
+            SyntaxToken Semicolon) : StatementSyntax
     {
-        public TypeSyntax Type { get; }
-        public SyntaxToken Identifier { get; }
-        public SyntaxToken? EqualsToken { get; }
-        public ExpressionSyntax? Initializer { get; }
-        public SyntaxToken Semicolon { get; }
-
-        public LocalVariableDeclarationStatementSyntax(
-            TypeSyntax type,
-            SyntaxToken identifier,
-            SyntaxToken? equalsToken,
-            ExpressionSyntax? initializer,
-            SyntaxToken semicolon)
-        {
-            Type = type;
-            Identifier = identifier;
-            EqualsToken = equalsToken;
-            Initializer = initializer;
-            Semicolon = semicolon;
-            if (equalsToken is null && initializer is not null)
-                throw new Exception("Tried to initialize LocalVariableDeclaration statement with partial initialization");
-        }
-
-
         public override SyntaxKind Kind => SyntaxKind.LocalVariableDeclarationStatement;
 
         public override IEnumerable<SyntaxNode> GetChildren()
