@@ -17,49 +17,49 @@ namespace Compiler.CodeAnalysis.Binding
 
         private static void WriteNode(this IndentedTextWriter writer, BoundNode node)
         {
-            switch (node.Kind)
+            switch (node)
             {
-                case BoundNodeKind.BinaryExpression:
-                    writer.WriteBinaryExpression((BoundBinaryExpression) node);
+                case BoundBinaryExpression:
+                    writer.WriteBinaryExpression((BoundBinaryExpression)node);
                     break;
-                case BoundNodeKind.UnaryExpression:
+                case BoundUnaryExpression:
                     writer.WriteUnaryExpression((BoundUnaryExpression) node);
                     break;
-                case BoundNodeKind.IntegralLiteralExpression:
+                case BoundIntegralLiteralExpression:
                     writer.WriteIntegralLiteralExpression((BoundIntegralLiteralExpression) node);
                     break;
-                case BoundNodeKind.BooleanLiteralExpression:
+                case BoundBooleanLiteralExpression:
                     writer.WriteBooleanLiteralExpression((BoundBooleanLiteralExpression) node);
                     break;
-                case BoundNodeKind.BoundBlockStatement:
+                case BoundBlockStatement:
                     writer.WriteBlockStatement((BoundBlockStatement)node);
                     break;
-                case BoundNodeKind.BoundLocalVariableDeclarationStatement:
+                case BoundLocalVariableDeclarationStatement:
                     writer.WriteLocalVariableDeclarationStatement((BoundLocalVariableDeclarationStatement)node);
                     break;
-                case BoundNodeKind.BoundEmptyStatement:
+                case BoundEmptyStatement:
                     writer.WriteToken(SyntaxKind.SemicolonToken);
                     break;
-                case BoundNodeKind.BoundExpressionStatement:
+                case BoundExpressionStatement:
                     writer.WriteBoundExpressions((BoundExpressionStatement)node);
                     break;
-                case BoundNodeKind.AssignmentExpression:
+                case BoundAssignmentExpression:
                     writer.WriteAssignmentExpression((BoundAssignmentExpression)node);
                     break;
-                case BoundNodeKind.ErrorExpression:
+                case BoundErrorExpression:
                     writer.WriteErrorExpression(((BoundErrorExpression)node));
                     break;
-                case BoundNodeKind.VariableExpression:
+                case BoundVariableExpression:
                     writer.WriteVariableExpression((BoundVariableExpression)node);
                     break;
-                case BoundNodeKind.InvocationExpression:
+                case BoundInvocationExpression:
                     writer.WriteInvocationExpression((BoundInvocationExpression)node) ;
                     break;
-                case BoundNodeKind.ReturnStatement:
+                case BoundReturnStatement:
                     writer.WriteReturnStatement((BoundReturnStatement)node) ;
                     break;
                 default:
-                    throw new Exception($"Unrecognized bound node kind: {node.Kind}");
+                    throw new Exception($"Unrecognized bound node type: {node.GetType().Name}");
             }
         }
 
