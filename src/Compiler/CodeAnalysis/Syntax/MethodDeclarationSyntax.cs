@@ -11,19 +11,5 @@ namespace Compiler.CodeAnalysis.Syntax
             BlockStatementSyntax Body
         ) : SyntaxNode
     {
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return ReturnType;
-            yield return MemberName;
-            yield return OpenParenthesis;
-
-            foreach (var parameter in Parameters)
-            {
-                yield return parameter;
-            }
-
-            yield return CloseParenthesis;
-            yield return Body;
-        }
     }
 }

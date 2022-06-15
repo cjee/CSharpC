@@ -8,15 +8,5 @@ namespace Compiler.CodeAnalysis.Syntax
             SeperatedSyntaxList<ExpressionSyntax> Arguments,
             SyntaxToken CloseParenthesis) : ExpressionSyntax
     {
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            yield return PrimaryExpression;
-            yield return OpenParenthesis;
-            foreach (var argument in Arguments)
-            {
-                yield return argument;
-            }
-            yield return CloseParenthesis;
-        }
     }
 }

@@ -12,11 +12,6 @@ namespace Compiler.CodeAnalysis.Syntax
 
         public override TextSpan Span => TextSpan;
 
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            return Enumerable.Empty<SyntaxNode>();
-        }
-
         public override string ToString()
         {
             return $"Pos: {Position}: Type: {Kind}: text: '{Text}'";

@@ -7,7 +7,29 @@ namespace Compiler.CodeAnalysis.Syntax
     public abstract record SyntaxNode
     {
         public virtual SyntaxKind Kind => SyntaxFacts.GetSyntaxKindFromType(this);
-        public abstract IEnumerable<SyntaxNode> GetChildren();
+        public IEnumerable<SyntaxNode> GetChildren()
+        {
+            var result =  new List<SyntaxNode>();
+
+            foreach (var property in this.GetType().GetProperties())
+            {
+                var propertyType = property.PropertyType;
+
+                if (propertyType.IsSubclassOf(typeof(SyntaxNode)))
+                    result.Add((SyntaxNode)property.GetValue(this));
+
+                if(propertyType.IsAssignableTo(typeof(IEnumerable<SyntaxNode>)))
+                {
+                        var value = property.GetValue(this) as IEnumerable<SyntaxNode>;
+                        foreach (var item in value)
+                        {
+                            result.Add(item);
+                        }
+                }
+            }
+
+            return result;
+        }
 
         public virtual TextSpan Span
         {

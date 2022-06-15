@@ -9,14 +9,6 @@ namespace Compiler.CodeAnalysis.Syntax
         )
         : SyntaxNode
     {
-        public override IEnumerable<SyntaxNode> GetChildren()
-        {
-            foreach (var method in Methods)
-            {
-                yield return method;
-            }
 
-            yield return EndOfFileToken;
-        }
     }
 }
