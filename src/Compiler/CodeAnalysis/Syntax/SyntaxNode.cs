@@ -16,18 +16,24 @@ namespace Compiler.CodeAnalysis.Syntax
                 var propertyType = property.PropertyType;
 
                 if (propertyType.IsSubclassOf(typeof(SyntaxNode)))
-                    result.Add((SyntaxNode)property.GetValue(this));
+                {
+                    var value = property.GetValue(this) as SyntaxNode;
+                    if(value is not null)
+                        result.Add(value);
+                }
 
                 if(propertyType.IsAssignableTo(typeof(IEnumerable<SyntaxNode>)))
                 {
                         var value = property.GetValue(this) as IEnumerable<SyntaxNode>;
-                        foreach (var item in value)
+                        if (value is not null)
                         {
-                            result.Add(item);
+                            foreach (var item in value)
+                            {
+                                result.Add(item);
+                            }
                         }
                 }
             }
-
             return result;
         }
 
