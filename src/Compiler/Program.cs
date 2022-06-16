@@ -60,6 +60,7 @@ namespace Compiler
                 {
                     var emiter = new Emitter(Console.Out);
                     emiter.EmitGlobalScope(globalScope);
+                    emiter.EmitBoundProgram(boundProgram);
                 }
                 
                 textBuilder.Clear();
