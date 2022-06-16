@@ -1,50 +1,50 @@
+using Compiler.CodeAnalysis.Text;
 using System.Collections.Generic;
 using System.Linq;
-using Compiler.CodeAnalysis.Text;
 
-namespace Compiler.CodeAnalysis.Syntax
+namespace Compiler.CodeAnalysis.Syntax;
+
+public abstract record SyntaxNode
 {
-    public abstract record SyntaxNode
+    public string NodeName => this.GetType().Name;
+
+    public IEnumerable<SyntaxNode> GetChildren()
     {
-        public virtual SyntaxKind Kind => SyntaxFacts.GetSyntaxKindFromType(this);
-        public IEnumerable<SyntaxNode> GetChildren()
+        var result = new List<SyntaxNode>();
+
+        foreach (var property in this.GetType().GetProperties())
         {
-            var result =  new List<SyntaxNode>();
+            var propertyType = property.PropertyType;
 
-            foreach (var property in this.GetType().GetProperties())
+            if (propertyType.IsSubclassOf(typeof(SyntaxNode)))
             {
-                var propertyType = property.PropertyType;
+                var value = property.GetValue(this) as SyntaxNode;
+                if (value is not null)
+                    result.Add(value);
+            }
 
-                if (propertyType.IsSubclassOf(typeof(SyntaxNode)))
+            if (propertyType.IsAssignableTo(typeof(IEnumerable<SyntaxNode>)))
+            {
+                var value = property.GetValue(this) as IEnumerable<SyntaxNode>;
+                if (value is not null)
                 {
-                    var value = property.GetValue(this) as SyntaxNode;
-                    if(value is not null)
-                        result.Add(value);
-                }
-
-                if(propertyType.IsAssignableTo(typeof(IEnumerable<SyntaxNode>)))
-                {
-                        var value = property.GetValue(this) as IEnumerable<SyntaxNode>;
-                        if (value is not null)
-                        {
-                            foreach (var item in value)
-                            {
-                                result.Add(item);
-                            }
-                        }
+                    foreach (var item in value)
+                    {
+                        result.Add(item);
+                    }
                 }
             }
-            return result;
         }
+        return result;
+    }
 
-        public virtual TextSpan Span
+    public virtual TextSpan Span
+    {
+        get
         {
-            get
-            {
-                var first = GetChildren().First().Span;
-                var last = GetChildren().Last().Span;
-                return TextSpan.FromBounds(first.Start, last.End);
-            }
+            var first = GetChildren().First().Span;
+            var last = GetChildren().Last().Span;
+            return TextSpan.FromBounds(first.Start, last.End);
         }
     }
 }

@@ -1,128 +1,101 @@
-using System;
+namespace Compiler.CodeAnalysis.Syntax;
 
-namespace Compiler.CodeAnalysis.Syntax
+public static class SyntaxFacts
 {
-    public static class SyntaxFacts
+    public const string PlusTokenString = "+";
+    public const string MinusTokenString = "-";
+    public const string StarTokenString = "*";
+    public const string SlashTokenString = "/";
+    public const string PercentTokenString = "%";
+    public const string BangTokenString = "!";
+    public const string LessTokenString = "<";
+    public const string LessOrEqualTokenString = "<=";
+    public const string GreaterTokenString = ">";
+    public const string GreaterOrEqualTokenString = ">=";
+    public const string BangEqualsTokenString = "!=";
+    public const string EqualsEqualsTokenString = "==";
+    public const string EqualsTokenString = "=";
+    public const string OpenParenthesisTokenString = "(";
+    public const string CloseParenthesisTokenString = ")";
+    public const string OpenBraceTokenString = "{";
+    public const string CloseBraceTokenString = "}";
+    public const string SemicolonTokenString = ";";
+    public const string DotTokenString = ".";
+    public const string CommaTokenString = ",";
+
+    public const string FalseKeywordString = "false";
+    public const string TrueKeywordString = "true";
+    public const string VoidKeywordString = "void";
+    public const string BoolKeywordString = "bool";
+    public const string IntKeywordString = "int";
+    public const string ReturnKeywordString = "return";
+
+    public static System.Type GetKeywordTokenType(string text)
     {
-        public static string GetText(SyntaxKind kind)
+        return text switch
         {
-            return kind switch
-            {
-                SyntaxKind.PlusToken => "+",
-                SyntaxKind.MinusToken => "-",
-                SyntaxKind.StarToken => "*",
-                SyntaxKind.SlashToken => "/",
-                SyntaxKind.PercentToken => "%",
-                SyntaxKind.BangToken => "!",
-                SyntaxKind.LessToken => "<",
-                SyntaxKind.LessOrEqualToken => "<=",
-                SyntaxKind.GreaterToken => ">",
-                SyntaxKind.GreaterOrEqualToken => ">=",
-                SyntaxKind.BangEqualsToken => "!=",
-                SyntaxKind.EqualsEqualsToken => "==",
-                SyntaxKind.EqualsToken => "=",
-                SyntaxKind.OpenParenthesisToken => "(",
-                SyntaxKind.CloseParenthesisToken => ")",
-                SyntaxKind.OpenBraceToken => "{",
-                SyntaxKind.CloseBraceToken => "}",
-                SyntaxKind.SemicolonToken => ";",
-                SyntaxKind.DotToken => ".",
-                SyntaxKind.CommaToken => ",",
-                
-                SyntaxKind.FalseKeyword => "false",
-                SyntaxKind.TrueKeyword => "true",
-                SyntaxKind.VoidKeyword => "void",
-                SyntaxKind.BoolKeyword => "bool",
-                SyntaxKind.IntKeyword => "int",
-                SyntaxKind.ReturnKeyword => "return",
-                _ => string.Empty,
-            };
-        }
+            "true" => typeof(TrueKeyword),
+            "false" => typeof(FalseKeyword),
+            "void" => typeof(VoidKeyword),
+            "bool" => typeof(BoolKeyword),
+            "int" => typeof(IntKeyword),
+            "return" => typeof(ReturnKeyword),
+            _ => typeof(Identifier),
+        };
+    }
 
-        public static SyntaxKind GetKeywordToken(string text)
+    public static int GetUnaryOperatorPrecedence(this string syntaxText)
+    {
+        switch (syntaxText)
         {
-            return text switch
-            {
-                "true" => SyntaxKind.TrueKeyword,
-                "false" => SyntaxKind.FalseKeyword,
-                "void" => SyntaxKind.VoidKeyword,
-                "bool" => SyntaxKind.BoolKeyword,
-                "int" => SyntaxKind.IntKeyword,
-                "return" => SyntaxKind.ReturnKeyword,
-                _ => SyntaxKind.Identifier,
-            };
+            case PlusTokenString:
+            case MinusTokenString:
+            case BangTokenString:
+                return 13; //Based on C# operator count
+            default:
+                return 0;
         }
-        
-        public static int GetUnaryOperatorPrecedence(this SyntaxKind currentKind)
-        {
-            switch (currentKind)
-            {
-                case SyntaxKind.PlusToken:
-                case SyntaxKind.MinusToken:
-                case SyntaxKind.BangToken:
-                    return 13; //Based on C# operator count
-                default:
-                    return 0;
-            }
-        }
-        
-        public static int GetBinaryOperatorPrecedence(this SyntaxKind currentKind)
-        {
-            switch (currentKind)
-            {
-                case SyntaxKind.StarToken:
-                case SyntaxKind.SlashToken:
-                case SyntaxKind.PercentToken:
-                    return 12;
-                case SyntaxKind.PlusToken:
-                case SyntaxKind.MinusToken:
-                    return 11;
-                case SyntaxKind.LessToken:
-                case SyntaxKind.LessOrEqualToken:
-                case SyntaxKind.GreaterToken:
-                case SyntaxKind.GreaterOrEqualToken:
-                    return 9;
-                case SyntaxKind.BangEqualsToken:
-                case SyntaxKind.EqualsEqualsToken:
-                    return 8;
-                case  SyntaxKind.EqualsToken:
-                    return 1;
-                default:
-                    return 0;
-            }
-        }
-        
-        public static bool IsBuiltInType(SyntaxKind currentKind)
-        {
-            return currentKind switch
-            {
-                SyntaxKind.VoidKeyword => true,
-                SyntaxKind.BoolKeyword => true,
-                SyntaxKind.IntKeyword => true,
-                _ => false,
-            };
-        }
+    }
 
-        public static SyntaxKind GetSyntaxKindFromType<T>(T type) => type switch
+    public static int GetBinaryOperatorPrecedence(this string syntaxText)
+    {
+        switch (syntaxText)
         {
-            AssignmentExpressionSyntax => SyntaxKind.AssignmentExpression,
-            BinaryExpressionSyntax => SyntaxKind.BinaryExpression,
-            BlockStatementSyntax => SyntaxKind.BlockStatement,
-            BooleanLiteralExpressionSyntax => SyntaxKind.BooleanLiteralExpression,
-            CompilationUnit => SyntaxKind.CompilationUnit,
-            EmptyStatementSyntax => SyntaxKind.EmptyStatement,
-            ExpressionStatementSyntax => SyntaxKind.ExpressionStatement,
-            InvocationExpressionSyntax => SyntaxKind.InvocationExpression,
-            LocalVariableDeclarationStatementSyntax => SyntaxKind.LocalVariableDeclarationStatement,
-            MethodDeclarationSyntax => SyntaxKind.MethodDeclaration,
-            NumericLiteralExpressionSyntax => SyntaxKind.NumericLiteralExpression,
-            ParameterSyntax => SyntaxKind.Parameter,
-            ParenthesizedExpressionSyntax => SyntaxKind.ParenthesizedExpression,
-            ReturnStatementSyntax => SyntaxKind.ReturnStatement,
-            SimpleNameExpressionSyntax => SyntaxKind.SimpleNameExpression,
-            TypeSyntax => SyntaxKind.Type,
-            UnaryExpressionSyntax => SyntaxKind.UnaryExpression,
-            _ => throw new ArgumentException($"The type {nameof(T)} does not have corresponding SyntaxKind"),
+            case StarTokenString:
+            case SlashTokenString:
+            case PercentTokenString:
+                return 12;
+
+            case PlusTokenString:
+            case MinusTokenString:
+                return 11;
+
+            case LessTokenString:
+            case LessOrEqualTokenString:
+            case GreaterTokenString:
+            case GreaterOrEqualTokenString:
+                return 9;
+
+            case BangEqualsTokenString:
+            case EqualsEqualsTokenString:
+                return 8;
+
+            case EqualsTokenString:
+                return 1;
+
+            default:
+                return 0;
+        }
+    }
+
+    public static bool IsBuiltInType(SyntaxNode currentKind)
+    {
+        return currentKind switch
+        {
+            VoidKeyword => true,
+            BoolKeyword => true,
+            IntKeyword => true,
+            _ => false,
         };
     }
 }

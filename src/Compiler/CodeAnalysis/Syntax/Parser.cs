@@ -18,9 +18,9 @@ namespace Compiler.CodeAnalysis.Syntax
             do
             {
                 token = lexer.Lex();
-                if (token.Kind != SyntaxKind.WhitespaceToken)
+                if (token is not WhitespaceToken)
                     syntaxTokens.Add(token);
-            } while (token.Kind != SyntaxKind.EndOfFileToken);
+            } while (token is not EndOfFileToken);
 
             tokens = syntaxTokens.ToArray();
             Diagnostics.AddRange(lexer.Diagnostics);
@@ -38,21 +38,21 @@ namespace Compiler.CodeAnalysis.Syntax
             return tokens[index];
         }
 
-        private SyntaxToken MatchToken(SyntaxKind kind)
+        private SyntaxToken MatchToken<T>() where T : SyntaxToken, new()
         {
-            if (Current.Kind == kind)
+            if (Current is T)
                 return NextToken();
 
-            if (Current.Kind == SyntaxKind.BadToken)
+            if (Current is BadToken)
             {
                 //Bad token is already reported in diagnostics.
                 //Consuming bad token and replacing with expected for enabling further processing
                 position++;
-                return new SyntaxToken(kind, Current.Position, string.Empty, null);
+                return new T() with { Position = Current.Position };
             }
 
-            Diagnostics.ReportUnexpectedToken(Current.TextSpan, Current.Kind, kind);
-            return new SyntaxToken(kind, Current.Position, string.Empty, null);
+            Diagnostics.ReportUnexpectedToken(Current.TextSpan, Current.GetType(), typeof(T));
+            return new T() with { Position = Current.Position };
         }
 
         private SyntaxToken NextToken()
@@ -71,10 +71,9 @@ namespace Compiler.CodeAnalysis.Syntax
         private CompilationUnit ParseCompilationUnit()
         {
             var builder = ImmutableList.CreateBuilder<MethodDeclarationSyntax>();
-            var startposition = position;
-            while (Current.Kind != SyntaxKind.EndOfFileToken)
+            while (Current is not EndOfFileToken)
             {
-                startposition = position;
+                int startposition = position;
                 var method = ParseMethodeDeclaration();
                 if (position == startposition)
                 {
@@ -86,7 +85,7 @@ namespace Compiler.CodeAnalysis.Syntax
                 }
             }
 
-            var endOfFileToken = MatchToken(SyntaxKind.EndOfFileToken);
+            var endOfFileToken = MatchToken<EndOfFileToken>();
             return new CompilationUnit(builder.ToImmutable(), endOfFileToken);
         }
 
@@ -94,15 +93,15 @@ namespace Compiler.CodeAnalysis.Syntax
         {
             var type = ParseType();
 
-            var memberName = MatchToken(SyntaxKind.Identifier);
-            var openParenthesis = MatchToken(SyntaxKind.OpenParenthesisToken);
+            var memberName = MatchToken<Identifier>();
+            var openParenthesis = MatchToken<OpenParenthesisToken>();
 
 
             SeperatedSyntaxList<ParameterSyntax>? parameters = SeperatedSyntaxList<ParameterSyntax>.Empty();
-            if (Current.Kind is not (SyntaxKind.CloseParenthesisToken or SyntaxKind.OpenBraceToken))
+            if (Current is not (CloseParenthesisToken or OpenBraceToken))
                 parameters = ParseMethodeDeclarationParameters();
 
-            var closeParenthesis = MatchToken(SyntaxKind.CloseParenthesisToken);
+            var closeParenthesis = MatchToken<CloseParenthesisToken>();
             var body = ParseStatementBlock();
 
             return new MethodDeclarationSyntax(type, memberName, openParenthesis, parameters, closeParenthesis, body);
@@ -116,12 +115,12 @@ namespace Compiler.CodeAnalysis.Syntax
             var parseNextParameter = true;
             
             while (parseNextParameter && 
-                   Current.Kind != SyntaxKind.CloseBraceToken &&
-                   Current.Kind != SyntaxKind.EndOfFileToken)
+                   Current is not CloseBraceToken &&
+                   Current is not EndOfFileToken)
             {
                 var parameter = ParseParameter();
                 builder.Add(parameter);
-                if (Current.Kind == SyntaxKind.CommaToken)
+                if (Current is CommaToken)
                 {
                     var comma = NextToken();
                     builder.Add(comma);
@@ -138,26 +137,26 @@ namespace Compiler.CodeAnalysis.Syntax
         private ParameterSyntax ParseParameter()
         {
             var type = ParseType();
-            var identifier = MatchToken(SyntaxKind.Identifier);
+            var identifier = MatchToken<Identifier>();
             return new ParameterSyntax(type, identifier);
         }
         
         private TypeSyntax ParseType()
         {
-            return SyntaxFacts.IsBuiltInType(Current.Kind)
+            return SyntaxFacts.IsBuiltInType(Current)
                 ? new TypeSyntax(NextToken())
-                : new TypeSyntax(MatchToken(SyntaxKind.Identifier));
+                : new TypeSyntax(MatchToken<Identifier>());
         }
 
 
         private BlockStatementSyntax ParseStatementBlock()
         {
-            var openBrace = MatchToken(SyntaxKind.OpenBraceToken);
+            var openBrace = MatchToken<OpenBraceToken>();
 
             var statementList = ImmutableList.CreateBuilder<StatementSyntax>();
 
             var startPosition = position;
-            while (Current.Kind is not (SyntaxKind.CloseBraceToken or SyntaxKind.EndOfFileToken))
+            while (Current is not (CloseBraceToken or EndOfFileToken))
             {
                 startPosition = position;
                 statementList.Add(ParseStatement());
@@ -165,49 +164,49 @@ namespace Compiler.CodeAnalysis.Syntax
                     position++; //Skipping tokens if we cant parse statements
             }
 
-            var closeBrace = MatchToken(SyntaxKind.CloseBraceToken);
+            var closeBrace = MatchToken<CloseBraceToken>();
             return new BlockStatementSyntax(openBrace, statementList.ToImmutable(), closeBrace);
         }
 
         private StatementSyntax ParseStatement()
         {
-            if (Current.Kind == SyntaxKind.OpenBraceToken)
+            if (Current is OpenBraceToken)
                 return ParseStatementBlock();
-            if (Current.Kind == SyntaxKind.SemicolonToken)
+            if (Current is SemicolonToken)
                 return new EmptyStatementSyntax(NextToken());
             if (IsTypeSyntax())
                 return ParseDeclarationStatement();
-            if (Current.Kind == SyntaxKind.ReturnKeyword)
+            if (Current is ReturnKeyword)
                 return ParseReturnStatement();
             return ParseExpressionStatement();
         }
 
         private bool IsTypeSyntax()
         {
-            return Current.Kind is SyntaxKind.IntKeyword or SyntaxKind.BoolKeyword or SyntaxKind.VoidKeyword;
+            return Current is IntKeyword or BoolKeyword or VoidKeyword;
         }
 
         private ReturnStatementSyntax ParseReturnStatement()
         {
             var returnKeyword = NextToken();
-            if (Current.Kind == SyntaxKind.SemicolonToken)
+            if (Current is SemicolonToken)
                 return new ReturnStatementSyntax(returnKeyword, null, NextToken());
 
             var expression = ParseBinaryExpression();
-            var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+            var semicolon = MatchToken<SemicolonToken>();
             return new ReturnStatementSyntax(returnKeyword, expression, semicolon);
         }
 
         private StatementSyntax ParseExpressionStatement()
         {
             var expression = ParseAssignmentExpression();
-            var semicolon = MatchToken(SyntaxKind.SemicolonToken);
+            var semicolon = MatchToken<SemicolonToken>();
             return new ExpressionStatementSyntax(expression, semicolon);
         }
 
         private ExpressionSyntax ParseAssignmentExpression()
         {
-            if (Peak(0).Kind == SyntaxKind.Identifier && Peak(1).Kind == SyntaxKind.EqualsToken)
+            if (Peak(0) is Identifier && Peak(1) is EqualsToken)
             {
                 var identifier = NextToken();
                 var operatorToken = NextToken();
@@ -224,18 +223,18 @@ namespace Compiler.CodeAnalysis.Syntax
             SyntaxToken? equalsToken = null;
             ExpressionSyntax? expressionsSyntax = null;
 
-            SyntaxToken identifier = MatchToken(SyntaxKind.Identifier);
+            SyntaxToken identifier = MatchToken<Identifier>();
 
-            if (Current.Kind != SyntaxKind.SemicolonToken)
+            if (Current is not SemicolonToken)
             {
-                equalsToken = MatchToken(SyntaxKind.EqualsToken);
+                equalsToken = MatchToken<EqualsToken>();
 
-                if (Current.Kind == SyntaxKind.SemicolonToken) Diagnostics.ReportMissingExpression(Current.TextSpan);
+                if (Current is SemicolonToken) Diagnostics.ReportMissingExpression(Current.TextSpan);
 
                 expressionsSyntax = ParseBinaryExpression();
             }
 
-            SyntaxToken semicolon = MatchToken(SyntaxKind.SemicolonToken);
+            SyntaxToken semicolon = MatchToken<SemicolonToken>();
             return new LocalVariableDeclarationStatementSyntax(type, identifier, equalsToken, expressionsSyntax,
                 semicolon);
         }
@@ -243,7 +242,7 @@ namespace Compiler.CodeAnalysis.Syntax
         private ExpressionSyntax ParseBinaryExpression(int parentPrecedence = 0)
         {
             ExpressionSyntax left;
-            var unaryPrecedence = Current.Kind.GetUnaryOperatorPrecedence();
+            var unaryPrecedence = Current.Text.GetUnaryOperatorPrecedence();
             if (unaryPrecedence != 0 && unaryPrecedence >= parentPrecedence)
             {
                 var operatorToken = NextToken();
@@ -257,12 +256,12 @@ namespace Compiler.CodeAnalysis.Syntax
 
             while (true)
             {
-                var precedence = Current.Kind.GetBinaryOperatorPrecedence();
+                var precedence = Current.Text.GetBinaryOperatorPrecedence();
                 if (precedence == 0 || precedence < parentPrecedence)
                     break;
 
                 // right associativity 
-                if (precedence == parentPrecedence && Current.Kind != SyntaxKind.EqualsToken)
+                if (precedence == parentPrecedence && Current is not EqualsToken)
                     break;
 
                 var operatorToken = NextToken();
@@ -282,18 +281,18 @@ namespace Compiler.CodeAnalysis.Syntax
         {
             while (true)
             {
-                switch (Current.Kind)
+                switch (Current)
                 {
-                    case SyntaxKind.OpenParenthesisToken:
+                    case OpenParenthesisToken:
                         var open = NextToken();
                         var arguments = SeperatedSyntaxList<ExpressionSyntax>.Empty();
                         
-                        if(Current.Kind != SyntaxKind.CloseParenthesisToken)
+                        if(Current is not CloseParenthesisToken)
                         {
                             arguments = ParseArgumentList();
                         }
 
-                        var close = MatchToken(SyntaxKind.CloseParenthesisToken);
+                        var close = MatchToken<CloseParenthesisToken>();
                         expression = new InvocationExpressionSyntax(expression, open, arguments, close);
                         break;
                     default:
@@ -309,12 +308,12 @@ namespace Compiler.CodeAnalysis.Syntax
             var parseNextParameter = true;
             
             while (parseNextParameter && 
-                   Current.Kind != SyntaxKind.CloseBraceToken &&
-                   Current.Kind != SyntaxKind.EndOfFileToken)
+                   Current is not CloseBraceToken &&
+                   Current is not EndOfFileToken)
             {
                 var parameter = ParseBinaryExpression();
                 builder.Add(parameter);
-                if (Current.Kind == SyntaxKind.CommaToken)
+                if (Current is CommaToken)
                 {
                     var comma = NextToken();
                     builder.Add(comma);
@@ -330,23 +329,23 @@ namespace Compiler.CodeAnalysis.Syntax
 
         private ExpressionSyntax ParsePrimaryExpression()
         {
-            switch (Current.Kind)
+            switch (Current)
             {
-                case SyntaxKind.OpenParenthesisToken:
+                case OpenParenthesisToken:
                 {
                     var open = NextToken();
                     var expression = ParseBinaryExpression();
-                    var close = MatchToken(SyntaxKind.CloseParenthesisToken);
+                    var close = MatchToken<CloseParenthesisToken>();
                     return new ParenthesizedExpressionSyntax(open, expression, close);
                 }
                 
-                case SyntaxKind.FalseKeyword or SyntaxKind.TrueKeyword:
+                case FalseKeyword or TrueKeyword:
                     return new BooleanLiteralExpressionSyntax(NextToken());
-                case SyntaxKind.IntegerLiteralToken:
+                case IntegerLiteralToken:
                     return new NumericLiteralExpressionSyntax(NextToken());
-                case SyntaxKind.Identifier:
+                case Identifier:
                 default:
-                    return new SimpleNameExpressionSyntax(MatchToken(SyntaxKind.Identifier));
+                    return new SimpleNameExpressionSyntax(MatchToken<Identifier>());
             }
         }
     }

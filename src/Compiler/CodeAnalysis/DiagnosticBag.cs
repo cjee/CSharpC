@@ -39,9 +39,9 @@ namespace Compiler.CodeAnalysis
             Report(span, message);
         }
 
-        public void ReportUnexpectedToken(TextSpan span, SyntaxKind currentKind, SyntaxKind expected)
+        public void ReportUnexpectedToken(TextSpan span, System.Type currentKind, System.Type expected)
         {
-            var message = $"Unexpected token <{currentKind}>, expected <{expected}>";
+            var message = $"Unexpected token <{currentKind.Name}>, expected <{expected.Name}>";
             Report(span, message);
         }
 
@@ -49,14 +49,14 @@ namespace Compiler.CodeAnalysis
             TypeSymbol boundRightType)
         {
             var message =
-                $"Binary operator '{SyntaxFacts.GetText(operatorToken.Kind)}' is not defined for type '{boundLeftType.Name}' and '{boundRightType.Name}'";
+                $"Binary operator '{operatorToken.Text}' is not defined for type '{boundLeftType.Name}' and '{boundRightType.Name}'";
             Report(operatorToken.TextSpan, message);
         }
 
         public void ReportUndefinedUnaryOperator(SyntaxToken operatorToken, TypeSymbol boundOperandType)
         {
             var message =
-                $"Unary operator '{SyntaxFacts.GetText(operatorToken.Kind)}' is not defined for type '{boundOperandType.Name}'";
+                $"Unary operator '{operatorToken.Text}' is not defined for type '{boundOperandType.Name}'";
             Report(operatorToken.TextSpan, message);
         }
 

@@ -38,7 +38,7 @@ namespace Compiler.CodeAnalysis.Binding
                     writer.WriteLocalVariableDeclarationStatement((BoundLocalVariableDeclarationStatement)node);
                     break;
                 case BoundEmptyStatement:
-                    writer.WriteToken(SyntaxKind.SemicolonToken);
+                    writer.WriteString(SyntaxFacts.SemicolonTokenString);
                     break;
                 case BoundExpressionStatement:
                     writer.WriteBoundExpressions((BoundExpressionStatement)node);
@@ -65,7 +65,7 @@ namespace Compiler.CodeAnalysis.Binding
 
         private static void WriteReturnStatement(this IndentedTextWriter writer, BoundReturnStatement node)
         {
-            writer.WriteToken(SyntaxKind.ReturnKeyword);
+            writer.WriteString(SyntaxFacts.ReturnKeywordString);
             writer.Write(" ");
             if(node.BoundExpression is not null)
                 writer.WriteNode(node.BoundExpression);
@@ -81,7 +81,7 @@ namespace Compiler.CodeAnalysis.Binding
                 writer.WriteNode(node.Arguments[0]);
                 for (int i = 1; i < node.Arguments.Count; i++)
                 {
-                    writer.WriteToken(SyntaxKind.CommaToken);
+                    writer.WriteString(SyntaxFacts.CommaTokenString);
                     writer.Write(" ");
                     writer.WriteNode(node.Arguments[i]);
                 }
@@ -102,7 +102,7 @@ namespace Compiler.CodeAnalysis.Binding
         private static void WriteAssignmentExpression(this IndentedTextWriter writer, BoundAssignmentExpression node)
         {
             writer.Write($"{node.Variable.Name} ");
-            writer.WriteToken(SyntaxKind.EqualsToken);
+            writer.WriteString(SyntaxFacts.EqualsTokenString);
             writer.Write(" ");
             writer.WriteNode(node.Expression);
         }
@@ -115,7 +115,7 @@ namespace Compiler.CodeAnalysis.Binding
         
         private static void WriteBlockStatement(this IndentedTextWriter writer, BoundBlockStatement node)
         {
-            writer.WriteToken(SyntaxKind.OpenBraceToken);
+            writer.WriteString(SyntaxFacts.OpenBraceTokenString);
             writer.WriteLine();
             writer.Indent++;
 
@@ -126,7 +126,7 @@ namespace Compiler.CodeAnalysis.Binding
             }
             
             writer.Indent--;
-            writer.WriteToken(SyntaxKind.CloseBraceToken);
+            writer.WriteString(SyntaxFacts.CloseBraceTokenString);
             writer.WriteLine();
         }
 
@@ -142,19 +142,19 @@ namespace Compiler.CodeAnalysis.Binding
         
         private static void WriteUnaryExpression(this IndentedTextWriter writer, BoundUnaryExpression node)
         {
-            var precedence = node.BoundOperator.SyntaxKind.GetUnaryOperatorPrecedence();
+            var precedence = node.BoundOperator.SyntaxString.GetUnaryOperatorPrecedence();
 
-            writer.WriteToken(node.BoundOperator.SyntaxKind);
+            writer.WriteString(node.BoundOperator.SyntaxString);
             writer.WriteNestedExpression(node.BoundOperand, precedence);
         }
 
         private static void WriteBinaryExpression(this IndentedTextWriter writer, BoundBinaryExpression node)
         {
-            var precedence = node.BoundOperator.SyntaxKind.GetBinaryOperatorPrecedence();
+            var precedence = node.BoundOperator.SyntaxString.GetBinaryOperatorPrecedence();
 
             writer.WriteNestedExpression(node.LeftOperand, precedence);
             writer.WriteSpace();
-            writer.WriteToken(node.BoundOperator.SyntaxKind);
+            writer.WriteString(node.BoundOperator.SyntaxString);
             writer.WriteSpace();
             writer.WriteNestedExpression(node.RightOperand, precedence);
         }
@@ -178,11 +178,11 @@ namespace Compiler.CodeAnalysis.Binding
             {
                 case BoundUnaryExpression unary:
                     writer.WriteNestedExpression(unary, parentPrecedence,
-                        unary.BoundOperator.SyntaxKind.GetUnaryOperatorPrecedence());
+                        unary.BoundOperator.SyntaxString.GetUnaryOperatorPrecedence());
                     break;
                 case BoundBinaryExpression binary:
                     writer.WriteNestedExpression(binary, parentPrecedence,
-                        binary.BoundOperator.SyntaxKind.GetBinaryOperatorPrecedence());
+                        binary.BoundOperator.SyntaxString.GetBinaryOperatorPrecedence());
                     break;
                 default:
                     expression.WriteTo(writer);
@@ -195,18 +195,18 @@ namespace Compiler.CodeAnalysis.Binding
         {
             var needParenthesis = parentPrecedence >= currentPrecedence;
             if (needParenthesis)
-                writer.WriteToken(SyntaxKind.OpenParenthesisToken);
+                writer.WriteString(SyntaxFacts.OpenParenthesisTokenString);
 
             expression.WriteTo(writer);
             if (needParenthesis)
-                writer.WriteToken(SyntaxKind.CloseParenthesisToken);
+                writer.WriteString(SyntaxFacts.CloseParenthesisTokenString);
         }
 
-        private static void WriteToken(this IndentedTextWriter writer, SyntaxKind kind)
+        private static void WriteString(this IndentedTextWriter writer, string value)
         {
-            writer.Write(SyntaxFacts.GetText(kind));
+            writer.Write(value);
         }
-        
+
         private static void WriteSpace(this IndentedTextWriter writer)
         {
             writer.Write(" ");
