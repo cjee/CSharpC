@@ -4,14 +4,13 @@ using Compiler.CodeAnalysis.Syntax;
 
 namespace Compiler.CodeAnalysis.Binding
 {
-    public class BoundBinaryOperator 
+    public record BoundBinaryOperator (
+            string SyntaxString,
+            BoundBinaryOperatorKind BoundUnaryOperatorKind,
+            TypeSymbol LeftType,
+            TypeSymbol RightType,
+            TypeSymbol ResultType)
     {
-        public string SyntaxString { get; }
-        public BoundBinaryOperatorKind BoundUnaryOperatorKind { get; }
-        public TypeSymbol LeftType { get; }
-        public TypeSymbol RightType { get; }
-        public TypeSymbol ResultType { get; }
-
         public BoundBinaryOperator(string syntaxString, BoundBinaryOperatorKind boundUnaryOperatorKind, TypeSymbol type)
             : this(syntaxString, boundUnaryOperatorKind, type, type, type )
         {
@@ -20,20 +19,6 @@ namespace Compiler.CodeAnalysis.Binding
         public BoundBinaryOperator(string syntaxString, BoundBinaryOperatorKind boundUnaryOperatorKind, TypeSymbol operandType, TypeSymbol resultType)
             : this(syntaxString, boundUnaryOperatorKind, operandType, operandType, resultType)
         {
-        }
-        
-        public BoundBinaryOperator(
-            string syntaxString, 
-            BoundBinaryOperatorKind boundUnaryOperatorKind, 
-            TypeSymbol leftType,
-            TypeSymbol rightType,
-            TypeSymbol resultType)
-        {
-            SyntaxString = syntaxString;
-            BoundUnaryOperatorKind = boundUnaryOperatorKind;
-            LeftType = leftType;
-            RightType = rightType;
-            ResultType = resultType;
         }
 
         private static BoundBinaryOperator[] operators =
