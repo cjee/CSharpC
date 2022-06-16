@@ -6,18 +6,18 @@ namespace Compiler.CodeAnalysis.Binding
 {
     public record BoundBinaryOperator (
             string SyntaxString,
-            BoundBinaryOperatorKind BoundUnaryOperatorKind,
+            BoundBinaryOperatorKind BoundBinaryOperatorKind,
             TypeSymbol LeftType,
             TypeSymbol RightType,
             TypeSymbol ResultType)
     {
-        public BoundBinaryOperator(string syntaxString, BoundBinaryOperatorKind boundUnaryOperatorKind, TypeSymbol type)
-            : this(syntaxString, boundUnaryOperatorKind, type, type, type )
+        public BoundBinaryOperator(string syntaxString, BoundBinaryOperatorKind boundBinaryOperatorKind, TypeSymbol type)
+            : this(syntaxString, boundBinaryOperatorKind, type, type, type )
         {
         }
         
-        public BoundBinaryOperator(string syntaxString, BoundBinaryOperatorKind boundUnaryOperatorKind, TypeSymbol operandType, TypeSymbol resultType)
-            : this(syntaxString, boundUnaryOperatorKind, operandType, operandType, resultType)
+        public BoundBinaryOperator(string syntaxString, BoundBinaryOperatorKind boundBinaryOperatorKind, TypeSymbol operandType, TypeSymbol resultType)
+            : this(syntaxString, boundBinaryOperatorKind, operandType, operandType, resultType)
         {
         }
 
