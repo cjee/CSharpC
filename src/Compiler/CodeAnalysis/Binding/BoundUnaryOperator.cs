@@ -31,10 +31,10 @@ namespace Compiler.CodeAnalysis.Binding
 
         private static BoundUnaryOperator[] operators =
         {
-            new BoundUnaryOperator(SyntaxFacts.PlusTokenString, BoundUnaryOperatorKind.Identity, TypeSymbol.Int),
-            new BoundUnaryOperator(SyntaxFacts.MinusTokenString, BoundUnaryOperatorKind.Negation, TypeSymbol.Int),
+            new BoundUnaryOperator(SyntaxFacts.PlusTokenString, BoundUnaryOperatorKind.Identity, TypeSymbols.Int),
+            new BoundUnaryOperator(SyntaxFacts.MinusTokenString, BoundUnaryOperatorKind.Negation, TypeSymbols.Int),
             
-            new BoundUnaryOperator(SyntaxFacts.BangTokenString, BoundUnaryOperatorKind.LogicalNegation, TypeSymbol.Boolean),
+            new BoundUnaryOperator(SyntaxFacts.BangTokenString, BoundUnaryOperatorKind.LogicalNegation, TypeSymbols.Boolean),
         };
 
         public static BoundUnaryOperator? Bind(string operandString, TypeSymbol boundOperandType)

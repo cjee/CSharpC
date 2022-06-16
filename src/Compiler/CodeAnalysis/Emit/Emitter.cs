@@ -29,13 +29,13 @@ public class Emitter
     private string ResolveCType(TypeSymbol type)
     {
 
-        if (type == TypeSymbol.Error)
+        if (type == TypeSymbols.Error)
             throw new Exception("Can't emmit emit builtin Error Type");
 
-        if (type == TypeSymbol.Boolean || type == TypeSymbol.Int)
+        if (type == TypeSymbols.Boolean || type == TypeSymbols.Int)
             return "int";
 
-        if (type == TypeSymbol.Void)
+        if (type == TypeSymbols.Void)
             return "void";
 
         throw new Exception($"Trying to emmit unknown type {type.Name}");

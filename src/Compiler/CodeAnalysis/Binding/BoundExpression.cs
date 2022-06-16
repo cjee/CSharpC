@@ -17,15 +17,15 @@ public sealed record BoundBinaryExpression(BoundBinaryOperator BoundOperator, Bo
 }
 public sealed record BoundBooleanLiteralExpression(bool Value) : BoundExpression
 {
-    public override TypeSymbol Type => TypeSymbol.Boolean;
+    public override TypeSymbol Type => TypeSymbols.Boolean;
 }
 public sealed record BoundErrorExpression : BoundExpression
 {
-    public override TypeSymbol Type => TypeSymbol.Error;
+    public override TypeSymbol Type => TypeSymbols.Error;
 }
 public sealed record BoundIntegralLiteralExpression(int Value) : BoundExpression
 {
-    public override TypeSymbol Type => TypeSymbol.Int;
+    public override TypeSymbol Type => TypeSymbols.Int;
 }
 public sealed record BoundInvocationExpression(MethodSymbol Method, ImmutableList<BoundExpression> Arguments) : BoundExpression
 {

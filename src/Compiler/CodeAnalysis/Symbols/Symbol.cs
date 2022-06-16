@@ -1,13 +1,12 @@
-namespace Compiler.CodeAnalysis.Symbols
-{
-    public abstract class Symbol
-    {
-        public string Name { get; }
+using Compiler.CodeAnalysis.Binding;
+using Compiler.CodeAnalysis.Syntax;
+using System.Collections.Immutable;
 
-        private protected Symbol(string name)
-        {
-            Name = name;
-        } 
-        public abstract SymbolKind Kind { get;}
-    }
-}
+namespace Compiler.CodeAnalysis.Symbols;
+
+public abstract record Symbol(string Name);
+
+public record MethodSymbol(string Name, TypeSymbol Type, ImmutableList<ParameterSymbol> Parameters, MethodDeclarationSyntax Declaration) : Symbol(Name);
+public record ParameterSymbol(string Name, TypeSymbol Type) : VariableSymbol(Name, Type);
+public record TypeSymbol(string Name, BoundExpression? DefaultInitializer) : Symbol(Name);
+public record VariableSymbol(string Name, TypeSymbol Type) : Symbol(Name);

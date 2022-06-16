@@ -57,9 +57,8 @@ namespace Compiler.CodeAnalysis.Binding
                 methodBodies.Add(method, body);
                 diagnostics.AddRange(binder.diagnostics);
                 
-                //FIXME: type check does not work
                 // no flow logic hence this is enough for now
-                if (method.Type != TypeSymbol.Void && body.Statements.OfType<BoundReturnStatement>().Count() == 0)
+                if (method.Type != TypeSymbols.Void && body.Statements.OfType<BoundReturnStatement>().Count() == 0)
                     diagnostics.ReportNoReturnStatement(method.Declaration.MemberName);
             }
 
@@ -105,7 +104,7 @@ namespace Compiler.CodeAnalysis.Binding
             }
             var boundExpression = syntax.Expression is null ? null : BindExpression(syntax.Expression);
 
-            if (Method.Type == TypeSymbol.Void)
+            if (Method.Type == TypeSymbols.Void)
             {
                 if (boundExpression != null)
                     Diagnostics.ReportInvalidReturnExpression(syntax.Expression!, Method!);
@@ -142,11 +141,11 @@ namespace Compiler.CodeAnalysis.Binding
             LocalVariableDeclarationStatementSyntax syntax)
         {
             var type = BindTypeClause(syntax.Type);
-            if (type == TypeSymbol.Void)
+            if (type == TypeSymbols.Void)
             {
                 diagnostics.ReportCannotDeclareVariableWithTypeVoid(syntax.Type.Identifier);
             }
-            if (type == TypeSymbol.Error)
+            if (type == TypeSymbols.Error)
             {
                 diagnostics.ReportUndefinedType(syntax.Type);
             }
@@ -195,7 +194,7 @@ namespace Compiler.CodeAnalysis.Binding
                 var parameterName = parameter.Identifier.Text;
                 var parameterType = BindTypeClause(parameter.Type);
 
-                if (parameterType == TypeSymbol.Void)
+                if (parameterType == TypeSymbols.Void)
                     diagnostics.ReportInvalidParameterType(parameter.Identifier, parameterType);
                 
                 if (!seenParameterNames.Add(parameterName))
@@ -216,7 +215,7 @@ namespace Compiler.CodeAnalysis.Binding
         private TypeSymbol BindTypeClause(TypeSyntax typeSyntax)
         {
             var type = LookopType(typeSyntax.Identifier.Text);
-            if (type == TypeSymbol.Error) 
+            if (type == TypeSymbols.Error) 
                 diagnostics.ReportUndefinedType(typeSyntax);
             return type;
         }
@@ -225,10 +224,10 @@ namespace Compiler.CodeAnalysis.Binding
         {
             return name switch
             {
-                "bool" => TypeSymbol.Boolean,
-                "int" => TypeSymbol.Int,
-                "void" => TypeSymbol.Void,
-                _ => TypeSymbol.Error
+                "bool" => TypeSymbols.Boolean,
+                "int" => TypeSymbols.Int,
+                "void" => TypeSymbols.Void,
+                _ => TypeSymbols.Error
             };
         }
 
@@ -329,7 +328,7 @@ namespace Compiler.CodeAnalysis.Binding
 
             var expression = BindExpression(syntax.Right);
 
-            if (variable.Type != TypeSymbol.Error && expression is not BoundErrorExpression)
+            if (variable.Type != TypeSymbols.Error && expression is not BoundErrorExpression)
             {
                 if(variable.Type != expression.Type)
                     diagnostics.ReportCannotAssignType(syntax.Right, variable.Type, expression.Type);

@@ -38,21 +38,21 @@ namespace Compiler.CodeAnalysis.Binding
 
         private static BoundBinaryOperator[] operators =
         {
-            new BoundBinaryOperator(SyntaxFacts.PlusTokenString, BoundBinaryOperatorKind.Addition, TypeSymbol.Int),
-            new BoundBinaryOperator(SyntaxFacts.MinusTokenString, BoundBinaryOperatorKind.Subtraction, TypeSymbol.Int),
-            new BoundBinaryOperator(SyntaxFacts.StarTokenString, BoundBinaryOperatorKind.Multiplication, TypeSymbol.Int),
-            new BoundBinaryOperator(SyntaxFacts.SlashTokenString, BoundBinaryOperatorKind.Division, TypeSymbol.Int),
-            new BoundBinaryOperator(SyntaxFacts.PercentTokenString, BoundBinaryOperatorKind.Modulus, TypeSymbol.Int),
+            new BoundBinaryOperator(SyntaxFacts.PlusTokenString, BoundBinaryOperatorKind.Addition, TypeSymbols.Int),
+            new BoundBinaryOperator(SyntaxFacts.MinusTokenString, BoundBinaryOperatorKind.Subtraction, TypeSymbols.Int),
+            new BoundBinaryOperator(SyntaxFacts.StarTokenString, BoundBinaryOperatorKind.Multiplication, TypeSymbols.Int),
+            new BoundBinaryOperator(SyntaxFacts.SlashTokenString, BoundBinaryOperatorKind.Division, TypeSymbols.Int),
+            new BoundBinaryOperator(SyntaxFacts.PercentTokenString, BoundBinaryOperatorKind.Modulus, TypeSymbols.Int),
 
-            new BoundBinaryOperator(SyntaxFacts.LessTokenString, BoundBinaryOperatorKind.Less, TypeSymbol.Int, TypeSymbol.Boolean),
-            new BoundBinaryOperator(SyntaxFacts.LessOrEqualTokenString, BoundBinaryOperatorKind.LessOrEquals, TypeSymbol.Int, TypeSymbol.Boolean),
-            new BoundBinaryOperator(SyntaxFacts.GreaterTokenString, BoundBinaryOperatorKind.Greater, TypeSymbol.Int, TypeSymbol.Boolean),
-            new BoundBinaryOperator(SyntaxFacts.GreaterOrEqualTokenString, BoundBinaryOperatorKind.GreaterOrEquals, TypeSymbol.Int, TypeSymbol.Boolean),
-            new BoundBinaryOperator(SyntaxFacts.EqualsEqualsTokenString, BoundBinaryOperatorKind.Equals, TypeSymbol.Int, TypeSymbol.Boolean),
-            new BoundBinaryOperator(SyntaxFacts.BangEqualsTokenString, BoundBinaryOperatorKind.NotEquals, TypeSymbol.Int, TypeSymbol.Boolean),
+            new BoundBinaryOperator(SyntaxFacts.LessTokenString, BoundBinaryOperatorKind.Less, TypeSymbols.Int, TypeSymbols.Boolean),
+            new BoundBinaryOperator(SyntaxFacts.LessOrEqualTokenString, BoundBinaryOperatorKind.LessOrEquals, TypeSymbols.Int, TypeSymbols.Boolean),
+            new BoundBinaryOperator(SyntaxFacts.GreaterTokenString, BoundBinaryOperatorKind.Greater, TypeSymbols.Int, TypeSymbols.Boolean),
+            new BoundBinaryOperator(SyntaxFacts.GreaterOrEqualTokenString, BoundBinaryOperatorKind.GreaterOrEquals, TypeSymbols.Int, TypeSymbols.Boolean),
+            new BoundBinaryOperator(SyntaxFacts.EqualsEqualsTokenString, BoundBinaryOperatorKind.Equals, TypeSymbols.Int, TypeSymbols.Boolean),
+            new BoundBinaryOperator(SyntaxFacts.BangEqualsTokenString, BoundBinaryOperatorKind.NotEquals, TypeSymbols.Int, TypeSymbols.Boolean),
 
-            new BoundBinaryOperator(SyntaxFacts.EqualsEqualsTokenString, BoundBinaryOperatorKind.Equals, TypeSymbol.Boolean),
-            new BoundBinaryOperator(SyntaxFacts.BangEqualsTokenString, BoundBinaryOperatorKind.NotEquals, TypeSymbol.Boolean),
+            new BoundBinaryOperator(SyntaxFacts.EqualsEqualsTokenString, BoundBinaryOperatorKind.Equals, TypeSymbols.Boolean),
+            new BoundBinaryOperator(SyntaxFacts.BangEqualsTokenString, BoundBinaryOperatorKind.NotEquals, TypeSymbols.Boolean),
 
         };
 
