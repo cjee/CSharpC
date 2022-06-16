@@ -86,7 +86,7 @@ namespace Compiler
                 Console.Write(marker);
 
 
-            Console.Write(node.Kind);
+            Console.Write(node.NodeName);
             if (node is SyntaxToken t) Console.Write($" {t.Value}");
             Console.WriteLine();
             if (!isRoot)

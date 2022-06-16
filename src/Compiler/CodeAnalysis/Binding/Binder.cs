@@ -58,7 +58,7 @@ namespace Compiler.CodeAnalysis.Binding
                 diagnostics.AddRange(binder.diagnostics);
                 
                 // no flow logic hence this is enough for now
-                if (method.Type != TypeSymbol.Void && body.Statements.OfType<BoundReturnStatement>().Count() == 0)
+                if (method.Type != TypeSymbols.Void && body.Statements.OfType<BoundReturnStatement>().Count() == 0)
                     diagnostics.ReportNoReturnStatement(method.Declaration.MemberName);
             }
 
@@ -83,14 +83,14 @@ namespace Compiler.CodeAnalysis.Binding
 
         private BoundStatment BindStatement(StatementSyntax syntax)
         {
-            return syntax.Kind switch
+            return syntax switch
             {
-                SyntaxKind.LocalVariableDeclarationStatement => BindLocalVariableDeclarationStatement((LocalVariableDeclarationStatementSyntax)syntax),
-                SyntaxKind.BlockStatement => BindBlockStatement((BlockStatementSyntax)syntax),
-                SyntaxKind.ExpressionStatement => BindExpressionStatement((ExpressionStatementSyntax)syntax),
-                SyntaxKind.ReturnStatement => BindReturnStatement((ReturnStatementSyntax)syntax),
-                SyntaxKind.EmptyStatement => new BoundEmptyStatement(),
-                _ => throw new Exception($"Unexpected syntax {syntax.Kind}"),
+                LocalVariableDeclarationStatementSyntax => BindLocalVariableDeclarationStatement((LocalVariableDeclarationStatementSyntax)syntax),
+                BlockStatementSyntax => BindBlockStatement((BlockStatementSyntax)syntax),
+                ExpressionStatementSyntax => BindExpressionStatement((ExpressionStatementSyntax)syntax),
+                ReturnStatementSyntax => BindReturnStatement((ReturnStatementSyntax)syntax),
+                EmptyStatementSyntax => new BoundEmptyStatement(),
+                _ => throw new Exception($"Unexpected syntax {syntax.NodeName}"),
             };
         }
 
@@ -104,7 +104,7 @@ namespace Compiler.CodeAnalysis.Binding
             }
             var boundExpression = syntax.Expression is null ? null : BindExpression(syntax.Expression);
 
-            if (Method.Type == TypeSymbol.Void)
+            if (Method.Type == TypeSymbols.Void)
             {
                 if (boundExpression != null)
                     Diagnostics.ReportInvalidReturnExpression(syntax.Expression!, Method!);
@@ -141,11 +141,11 @@ namespace Compiler.CodeAnalysis.Binding
             LocalVariableDeclarationStatementSyntax syntax)
         {
             var type = BindTypeClause(syntax.Type);
-            if (type == TypeSymbol.Void)
+            if (type == TypeSymbols.Void)
             {
                 diagnostics.ReportCannotDeclareVariableWithTypeVoid(syntax.Type.Identifier);
             }
-            if (type == TypeSymbol.Error)
+            if (type == TypeSymbols.Error)
             {
                 diagnostics.ReportUndefinedType(syntax.Type);
             }
@@ -194,7 +194,7 @@ namespace Compiler.CodeAnalysis.Binding
                 var parameterName = parameter.Identifier.Text;
                 var parameterType = BindTypeClause(parameter.Type);
 
-                if (parameterType == TypeSymbol.Void)
+                if (parameterType == TypeSymbols.Void)
                     diagnostics.ReportInvalidParameterType(parameter.Identifier, parameterType);
                 
                 if (!seenParameterNames.Add(parameterName))
@@ -215,7 +215,7 @@ namespace Compiler.CodeAnalysis.Binding
         private TypeSymbol BindTypeClause(TypeSyntax typeSyntax)
         {
             var type = LookopType(typeSyntax.Identifier.Text);
-            if (type == TypeSymbol.Error) 
+            if (type == TypeSymbols.Error) 
                 diagnostics.ReportUndefinedType(typeSyntax);
             return type;
         }
@@ -224,35 +224,35 @@ namespace Compiler.CodeAnalysis.Binding
         {
             return name switch
             {
-                "bool" => TypeSymbol.Boolean,
-                "int" => TypeSymbol.Int,
-                "void" => TypeSymbol.Void,
-                _ => TypeSymbol.Error
+                "bool" => TypeSymbols.Boolean,
+                "int" => TypeSymbols.Int,
+                "void" => TypeSymbols.Void,
+                _ => TypeSymbols.Error
             };
         }
 
         public BoundExpression BindExpression(ExpressionSyntax expressionSyntax)
         {
-            switch (expressionSyntax.Kind)
+            switch (expressionSyntax)
             {
-                case SyntaxKind.NumericLiteralExpression:
-                    return BindNumericLiteralExpression((NumericLiteralExpressionSyntax)expressionSyntax);
-                case SyntaxKind.BooleanLiteralExpression:
-                    return BindBooleanLiteralExpression((BooleanLiteralExpressionSyntax) expressionSyntax);
-                case SyntaxKind.UnaryExpression:
-                    return BindUnaryExpression((UnaryExpressionSyntax)expressionSyntax);
-                case SyntaxKind.BinaryExpression:
-                    return BindBinaryExpression((BinaryExpressionSyntax)expressionSyntax);
-                case SyntaxKind.ParenthesizedExpression:
-                    return BindParenthesizedExpression((ParenthesizedExpressionSyntax)expressionSyntax);
-                case SyntaxKind.AssignmentExpression:
-                    return BindAssignmentExpression((AssignmentExpressionSyntax)expressionSyntax);
-                case SyntaxKind.InvocationExpression:
-                    return BindInvocationExpression((InvocationExpressionSyntax)expressionSyntax);
-                case SyntaxKind.SimpleNameExpression:
-                    return BindSimpleNameExpression((SimpleNameExpressionSyntax)expressionSyntax);
+                case NumericLiteralExpressionSyntax syntax:
+                    return BindNumericLiteralExpression(syntax);
+                case BooleanLiteralExpressionSyntax syntax:
+                    return BindBooleanLiteralExpression(syntax);
+                case UnaryExpressionSyntax syntax:
+                    return BindUnaryExpression(syntax);
+                case BinaryExpressionSyntax syntax:
+                    return BindBinaryExpression(syntax);
+                case ParenthesizedExpressionSyntax syntax:
+                    return BindParenthesizedExpression(syntax);
+                case AssignmentExpressionSyntax syntax:
+                    return BindAssignmentExpression(syntax);
+                case InvocationExpressionSyntax syntax:
+                    return BindInvocationExpression(syntax);
+                case SimpleNameExpressionSyntax syntax:
+                    return BindSimpleNameExpression(syntax);
                 default:
-                    throw new Exception($"Unexpected expression syntax kind: {expressionSyntax.Kind}");
+                    throw new Exception($"Unexpected expression syntax kind: {expressionSyntax.NodeName}");
             }
         }
 
@@ -328,7 +328,7 @@ namespace Compiler.CodeAnalysis.Binding
 
             var expression = BindExpression(syntax.Right);
 
-            if (variable.Type != TypeSymbol.Error && expression is not BoundErrorExpression)
+            if (variable.Type != TypeSymbols.Error && expression is not BoundErrorExpression)
             {
                 if(variable.Type != expression.Type)
                     diagnostics.ReportCannotAssignType(syntax.Right, variable.Type, expression.Type);
@@ -342,7 +342,7 @@ namespace Compiler.CodeAnalysis.Binding
             var boundLeft = BindExpression(expressionsSyntax.Left);
             var boundRight = BindExpression(expressionsSyntax.Right);
 
-            var boundOperator = BoundBinaryOperator.Bind(expressionsSyntax.OperatorToken.Kind, boundLeft.Type, boundRight.Type);
+            var boundOperator = BoundBinaryOperator.Bind(expressionsSyntax.OperatorToken.Text, boundLeft.Type, boundRight.Type);
             if (boundOperator == null)
             {
                 diagnostics.ReportUndefinedBinaryOperator(expressionsSyntax.OperatorToken, boundLeft.Type,
@@ -362,7 +362,7 @@ namespace Compiler.CodeAnalysis.Binding
         private BoundExpression BindUnaryExpression(UnaryExpressionSyntax expressionsSyntax)
         {
             var boundOperand = BindExpression(expressionsSyntax.Operand);
-            var boundOperator = BoundUnaryOperator.Bind(expressionsSyntax.OperatorToken.Kind, boundOperand.Type);
+            var boundOperator = BoundUnaryOperator.Bind(expressionsSyntax.OperatorToken.Text, boundOperand.Type);
             if (boundOperator == null)
             {
                 diagnostics.ReportUndefinedUnaryOperator(expressionsSyntax.OperatorToken, boundOperand.Type);
@@ -383,7 +383,7 @@ namespace Compiler.CodeAnalysis.Binding
         
         private BoundExpression BindBooleanLiteralExpression(BooleanLiteralExpressionSyntax expressionsSyntax)
         {
-            bool value = expressionsSyntax.BooleanToken.Kind == SyntaxKind.TrueKeyword;
+            bool value = expressionsSyntax.BooleanToken is TrueKeyword;
             return new BoundBooleanLiteralExpression(value);
         }
     }

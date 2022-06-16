@@ -63,7 +63,7 @@ internal class BoundScope
             scope = scope.Parent;
         }
 
-        variableSymbol = new VariableSymbol(name, TypeSymbol.Error);
+        variableSymbol = new VariableSymbol(name, TypeSymbols.Error);
         return false;
     }
 
