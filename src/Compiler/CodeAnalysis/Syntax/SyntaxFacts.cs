@@ -2,6 +2,7 @@ namespace Compiler.CodeAnalysis.Syntax;
 
 public static class SyntaxFacts
 {
+    public const string EndOfFileTokenString = "\0";
     public const string PlusTokenString = "+";
     public const string MinusTokenString = "-";
     public const string StarTokenString = "*";

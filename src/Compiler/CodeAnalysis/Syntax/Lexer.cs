@@ -27,99 +27,99 @@ internal sealed class Lexer
         switch (Current)
         {
             case '\0':
-                return new EndOfFileToken(start, textValue(), value);
+                return new EndOfFileToken(start);
 
             case '+':
                 position++;
-                return new PlusToken(start, textValue(), value);
+                return new PlusToken(start);
 
             case '-':
                 position++;
-                return new MinusToken(start, textValue(), value);
+                return new MinusToken(start);
 
             case '*':
                 position++;
-                return new StarToken(start, textValue(), value);
+                return new StarToken(start);
 
             case '/':
                 position++;
-                return new SlashToken(start, textValue(), value);
+                return new SlashToken(start);
 
             case '%':
                 position++;
-                return new PercentToken(start, textValue(), value);
+                return new PercentToken(start);
 
             case '!':
                 position++;
                 if (Current != '=')
                 {
-                    return new BangToken(start, textValue(), value);
+                    return new BangToken(start);
                 }
                 else
                 {
                     position++;
-                    return new BangEqualsToken(start, textValue(), value);
+                    return new BangEqualsToken(start);
                 }
             case '<':
                 position++;
                 if (Current != '=')
                 {
-                    return new LessToken(start, textValue(), value);
+                    return new LessToken(start);
                 }
                 else
                 {
                     position++;
-                    return new LessOrEqualToken(start, textValue(), value);
+                    return new LessOrEqualToken(start);
                 }
             case '>':
                 position++;
                 if (Current != '=')
                 {
-                    return new GreaterToken(start, textValue(), value);
+                    return new GreaterToken(start);
                 }
                 else
                 {
                     position++;
-                    return new GreaterOrEqualToken(start, textValue(), value);
+                    return new GreaterOrEqualToken(start);
                 }
             case '=':
                 position++;
                 if (Current != '=')
                 {
-                    return new EqualsToken(start, textValue(), value);
+                    return new EqualsToken(start);
                 }
                 else
                 {
                     position++;
-                    return new EqualsEqualsToken(start, textValue(), value);
+                    return new EqualsEqualsToken(start);
                 }
             case '(':
                 position++;
-                return new OpenParenthesisToken(start, textValue(), value);
+                return new OpenParenthesisToken(start);
 
             case ')':
                 position++;
-                return new CloseParenthesisToken(start, textValue(), value);
+                return new CloseParenthesisToken(start);
 
             case '{':
                 position++;
-                return new OpenBraceToken(start, textValue(), value);
+                return new OpenBraceToken(start);
 
             case '}':
                 position++;
-                return new CloseBraceToken(start, textValue(), value);
+                return new CloseBraceToken(start);
 
             case ';':
                 position++;
-                return new SemicolonToken(start, textValue(), value);
+                return new SemicolonToken(start);
 
             case '.':
                 position++;
-                return new DotToken(start, textValue(), value);
+                return new DotToken(start);
 
             case ',':
                 position++;
-                return new CommaToken(start, textValue(), value);
+                return new CommaToken(start);
 
             case '0':
             case '1':
@@ -146,7 +146,7 @@ internal sealed class Lexer
                 {
                     diagnostics.ReportBadCharacter(position, Current);
                     position++;
-                    return new BadToken(start, textValue(), value);
+                    return new BadToken(start, textValue());
                 }
         }
     }
@@ -161,12 +161,12 @@ internal sealed class Lexer
 
         SyntaxToken token = text switch
         {
-            "true" => new TrueKeyword(start, text, true),
-            "false" => new FalseKeyword(start, text, false),
-            "void" => new VoidKeyword(start, text, null),
-            "bool" => new BoolKeyword(start, text, null),
-            "int" => new IntKeyword(start, text, null),
-            "return" => new ReturnKeyword(start, text, null),
+            "true" => new TrueKeyword(start),
+            "false" => new FalseKeyword(start),
+            "void" => new VoidKeyword(start),
+            "bool" => new BoolKeyword(start),
+            "int" => new IntKeyword(start),
+            "return" => new ReturnKeyword(start),
             _ => new Identifier(start, text, text),
         };
 
@@ -178,7 +178,7 @@ internal sealed class Lexer
         while (char.IsWhiteSpace(Current))
             position++;
 
-        return new WhitespaceToken(start, source.Substring(start, position - start), null);
+        return new WhitespaceToken(start, source.Substring(start, position - start));
     }
 
     private SyntaxToken ReadNumber()
