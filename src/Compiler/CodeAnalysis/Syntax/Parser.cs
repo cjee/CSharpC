@@ -192,7 +192,7 @@ namespace Compiler.CodeAnalysis.Syntax
             if (Current is SemicolonToken)
                 return new ReturnStatementSyntax(returnKeyword, null, NextToken());
 
-            var expression = ParseBinaryExpression();
+            var expression = ParseAssignmentExpression();
             var semicolon = MatchToken<SemicolonToken>();
             return new ReturnStatementSyntax(returnKeyword, expression, semicolon);
         }
