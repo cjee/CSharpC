@@ -42,7 +42,7 @@ internal static class Interactive
                     break;
 
                 case "bound":
-                    if (IsCompiled) PrintBoundProgram(BoundProgram!);
+                    if (IsCompiled) BoundProgram!.PrintBoundProgram(Console.Out);
                     break;
 
                 case "emit":
@@ -130,17 +130,6 @@ internal static class Interactive
             }
             else
                 break;
-        }
-    }
-
-    private static void PrintBoundProgram(BoundProgram boundProgram)
-    {
-        foreach (var (symbol, body) in boundProgram.Methods)
-        {
-            Console.Write($"{symbol.Type.Name} {symbol.Name} (");
-            Console.Write(string.Join(", ", symbol.Parameters.Select(x => $"{x.Type.Name} {x.Name}")));
-            Console.WriteLine(")");
-            body.WriteTo(Console.Out);
         }
     }
 
