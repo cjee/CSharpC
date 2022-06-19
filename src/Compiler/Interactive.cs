@@ -145,16 +145,30 @@ internal static class Interactive
     }
 
     private static void PrintSyntaxTreeNode(SyntaxNode node, string indent = "", bool isRoot = true,
-        bool isLast = true)
+        bool isLast = true, SyntaxNode? parrent = null)
     {
+        var currentColor = Console.ForegroundColor;
+        Console.ForegroundColor = ConsoleColor.White;
         Console.Write(indent);
         var marker = isLast ? "└──" : "├──";
         if (!isRoot)
             Console.Write(marker);
 
+        Console.ForegroundColor = node switch
+        {
+            TypeSyntax => typeColor,
+            Identifier when parrent is MethodDeclarationSyntax => identifierColor,
+            Identifier when parrent is LocalVariableDeclarationStatementSyntax or ParameterSyntax or SimpleNameExpressionSyntax => localColor,
+            NumericLiteralExpressionSyntax or IntegerLiteralToken => integerColor,
+            ReturnKeyword => keywordColor,
+            _ => currentColor,
+        };
+
         Console.Write(node.NodeName);
         if (node is SyntaxToken t) Console.Write($" {t.Value}");
         Console.WriteLine();
+
+
         if (!isRoot)
             indent += isLast ? "    " : "│    ";
 
@@ -162,7 +176,16 @@ internal static class Interactive
         if (children.Any())
         {
             var lastChild = children.Last();
-            foreach (var child in children) PrintSyntaxTreeNode(child, indent, false, child == lastChild);
+            foreach (var child in children) PrintSyntaxTreeNode(child, indent, false, child == lastChild, node);
         }
+
+        Console.ResetColor();
     }
+
+    private static ConsoleColor typeColor = ConsoleColor.DarkBlue;
+    private static ConsoleColor identifierColor = ConsoleColor.Yellow;
+    private static ConsoleColor localColor = ConsoleColor.Blue;
+    private static ConsoleColor integerColor = ConsoleColor.Green;
+    private static ConsoleColor keywordColor = ConsoleColor.Magenta;
+
 }
