@@ -59,7 +59,7 @@ internal class Engine
         Console.WriteLine($"Program exited with {result.ToString()} in {timer.ElapsedMilliseconds}ms");
     }
 
-    private static string LoadSourceFile(string fileName)
+    public static string LoadSourceFile(string fileName)
     {
         var path = Path.Combine(Environment.CurrentDirectory, fileName);
         if(File.Exists(path))

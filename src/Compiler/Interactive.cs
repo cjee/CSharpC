@@ -3,7 +3,6 @@ using Compiler.CodeAnalysis.Binding;
 using Compiler.CodeAnalysis.Emit;
 using Compiler.CodeAnalysis.Syntax;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -17,20 +16,21 @@ internal static class Interactive
     internal static void LaunchInteractive()
     {
         StartProgramInputMode();
-        Compile();
         while (true)
         {
             Console.Write("#");
-            var input = Console.ReadLine();
-
-            switch (input)
-            {
-                case "print":
-                    Console.WriteLine(TextBuilder.ToString());
+            var inputLine = Console.ReadLine() ?? string.Empty;
+            var inputs = inputLine.Split(" ");
+            var command = inputs[0];
+            switch (command)
+            { 
+                case "load":
+                    TextBuilder.Append(Engine.LoadSourceFile(inputs[1]));
+                    Compile();
                     break;
 
-                case "compile":
-                    Compile();
+                case "print":
+                    Console.WriteLine(TextBuilder.ToString());
                     break;
 
                 case "syntax":
@@ -94,8 +94,8 @@ internal static class Interactive
     private static void PrintHelp()
     {
         Console.WriteLine("\t Supported commands:");
+        Console.WriteLine("load [filename]\t - load program from file;");
         Console.WriteLine("print\t - print entered program;");
-        Console.WriteLine("compile\t - compile program;");
         Console.WriteLine("syntax\t - print syntax tree;");
         Console.WriteLine("bound\t - print bound tree;");
         Console.WriteLine("eval\t - Evaluate program;");
@@ -132,6 +132,7 @@ internal static class Interactive
             else
                 break;
         }
+        Compile();
     }
 
     private static void PrintSyntaxTreeNode(SyntaxNode node, string indent = "", bool isRoot = true,
