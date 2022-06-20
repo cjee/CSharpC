@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Linq;
 using Compiler.CodeAnalysis.Symbols;
 
 namespace Compiler.CodeAnalysis.Binding;
@@ -13,4 +14,6 @@ public class BoundProgram
         Diagnostics = diagnostics;
         Methods = methods;
     }
+
+    public bool HasErrors => Diagnostics.Any();
 }

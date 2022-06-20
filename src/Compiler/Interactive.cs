@@ -11,18 +11,13 @@ namespace Compiler;
 
 internal static class Interactive
 {
-    private static bool IsCompiled = false;
     private static StringBuilder TextBuilder = new();
-
-    private static SyntaxTree? SyntaxTree;
-    private static BoundGlobalScope? GlobalScope;
     private static BoundProgram? BoundProgram;
-
-    private static DiagnosticBag Diagnostics = new();
 
     internal static void LaunchInteractive()
     {
         StartProgramInputMode();
+        Compile();
         while (true)
         {
             Console.Write("#");
@@ -35,19 +30,23 @@ internal static class Interactive
                     break;
 
                 case "compile":
-                    CompileProgram();
+                    Compile();
                     break;
 
                 case "syntax":
-                    if (IsCompiled) PrintSyntaxTreeNode(SyntaxTree!.Root);
+                        var tree =  SyntaxTree.Parse(TextBuilder.ToString());
+                        ReportDiagnostics(tree.Diagnostics);
+                        PrintSyntaxTreeNode(tree.Root);
                     break;
 
                 case "bound":
-                    if (IsCompiled) BoundProgram!.PrintBoundProgram(Console.Out);
+                    if (BoundProgram is not null)
+                        BoundProgram!.PrintBoundProgram(Console.Out);
                     break;
 
                 case "eval":
-                    Evaluate();
+                    if(BoundProgram is not null)
+                        Engine.Evaluate(BoundProgram!);
                     break;
 
                 case "emit":
@@ -59,9 +58,8 @@ internal static class Interactive
                     break;
 
                 case "clear":
-                    IsCompiled = false;
                     TextBuilder.Clear();
-                    Diagnostics = new DiagnosticBag();
+                    BoundProgram = null;
                     break;
 
                 case "help":
@@ -76,34 +74,27 @@ internal static class Interactive
         }
     }
 
-    private static void Evaluate()
+    private static void Compile()
     {
-        if(!IsCompiled)
-            return;
-
-        Evaluator evaluator = new();
-        Stopwatch timer = new();
-        timer.Start();
-        var result = evaluator.Evaluate(BoundProgram!) ?? "null";
-        timer.Stop();
-
-        Console.WriteLine($"Program exited with {result.ToString()} in {timer.ElapsedMilliseconds}ms");
+        var (program, diagnostics) = Engine.Compile(TextBuilder.ToString());
+        ReportDiagnostics(diagnostics);
+        BoundProgram = program;
     }
 
     private static void EmmitCodeToScreen()
     {
-        if (IsCompiled && !Diagnostics.Any())
+        if (BoundProgram is not null && !BoundProgram.HasErrors)
         {
             var emiter = new Emitter(Console.Out);
-            emiter.EmitGlobalScope(GlobalScope!);
-            emiter.EmitBoundProgram(BoundProgram!);
+            emiter.EmitGlobalScope(BoundProgram);
+            emiter.EmitBoundProgram(BoundProgram);
         }
     }
 
     private static void PrintHelp()
     {
         Console.WriteLine("\t Supported commands:");
-        Console.WriteLine("compile\t - print entered program;");
+        Console.WriteLine("print\t - print entered program;");
         Console.WriteLine("compile\t - compile program;");
         Console.WriteLine("syntax\t - print syntax tree;");
         Console.WriteLine("bound\t - print bound tree;");
@@ -114,27 +105,17 @@ internal static class Interactive
         Console.WriteLine("help\t - display this help';");
     }
 
-    private static void CompileProgram()
+    private static void ReportDiagnostics(DiagnosticBag diagnostics)
     {
-        SyntaxTree = SyntaxTree.Parse(TextBuilder.ToString());
-        Diagnostics.AddRange(SyntaxTree.Diagnostics);
-
-        GlobalScope = Binder.BindGlobalScope(SyntaxTree.Root);
-        Diagnostics.AddRange(GlobalScope.Diagnostics);
-
-        BoundProgram = Binder.BindProgram(GlobalScope);
-        Diagnostics.AddRange(BoundProgram.Diagnostics);
-
-        if (Diagnostics.Any())
+        if (diagnostics.Any())
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            foreach (var value in Diagnostics)
+            foreach (var value in diagnostics)
             {
                 Console.WriteLine($"pos: {value.Location.Start}: {value}");
             }
             Console.ResetColor();
         }
-        IsCompiled = true;
     }
 
     private static void StartProgramInputMode()
