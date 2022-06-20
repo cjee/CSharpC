@@ -129,6 +129,12 @@ public class Evaluator
 
     private object InvokeMethod(BoundInvocationExpression invocationExpression)
     {
+        if(invocationExpression.Method.Name == "Write")
+        {
+            Console.Write(EvaluateExpression(invocationExpression.Arguments[0]));
+            return 0;
+        }
+
         (MethodSymbol method, BoundBlockStatement body) = Methods.First(x => x.Key.Name == invocationExpression.Method.Name);
         Dictionary<VariableSymbol, object> locals = new();
         for (int i = 0; i < method.Parameters.Count; i++)
