@@ -31,6 +31,8 @@ namespace Compiler.CodeAnalysis.Binding
         public static BoundGlobalScope BindGlobalScope(CompilationUnit syntax)
         {
             var binder = new Binder(new BoundScope(null), null);
+            
+            binder.BindGlobalMethods();
 
             foreach (var method in syntax.Methods)
             {
@@ -39,6 +41,14 @@ namespace Compiler.CodeAnalysis.Binding
 
             var methods = binder.scope.GetDeclaredMethods();
             return new BoundGlobalScope(binder.Diagnostics, methods);
+        }
+
+        private void BindGlobalMethods()
+        {
+            var parameters = ImmutableList.CreateBuilder<ParameterSymbol>();
+            parameters.Add(new ParameterSymbol("value", TypeSymbols.Int));
+            MethodSymbol method = new("Write", TypeSymbols.Void, parameters.ToImmutable(), null);
+            scope.TryDeclareMethod(method);
         }
 
         public static BoundProgram BindProgram(BoundGlobalScope globalScope)
@@ -51,6 +61,9 @@ namespace Compiler.CodeAnalysis.Binding
 
             foreach (var method in globalScope.Methods)
             {
+                if(method.Declaration is null)
+                    continue; // Built in method
+
                 var binder = new Binder(parentScope, method);
                 var body = binder.BindBlockStatement(method.Declaration.Body);
                 
