@@ -15,8 +15,6 @@ internal class Engine
             throw new Exception("One file should be provided for compiler");
         var source = LoadSourceFile(arguments.Files[0]);
 
-        Console.Write(source);
-
         var (program, diagnostics) =  Compile(source);
 
         if (diagnostics.Any())
@@ -56,7 +54,7 @@ internal class Engine
         var result = evaluator.Evaluate(boundProgram!) ?? "null";
         timer.Stop();
 
-        Console.WriteLine($"Program exited with {result.ToString()} in {timer.ElapsedMilliseconds}ms");
+        Console.WriteLine($"\nProgram exited with {result.ToString()} in {timer.ElapsedMilliseconds}ms");
     }
 
     public static string LoadSourceFile(string fileName)
