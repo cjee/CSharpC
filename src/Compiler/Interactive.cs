@@ -3,6 +3,7 @@ using Compiler.CodeAnalysis.Binding;
 using Compiler.CodeAnalysis.Emit;
 using Compiler.CodeAnalysis.Syntax;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -45,6 +46,10 @@ internal static class Interactive
                     if (IsCompiled) BoundProgram!.PrintBoundProgram(Console.Out);
                     break;
 
+                case "eval":
+                    Evaluate();
+                    break;
+
                 case "emit":
                     EmmitCodeToScreen();
                     break;
@@ -71,6 +76,20 @@ internal static class Interactive
         }
     }
 
+    private static void Evaluate()
+    {
+        if(!IsCompiled)
+            return;
+
+        Evaluator evaluator = new();
+        Stopwatch timer = new();
+        timer.Start();
+        var result = evaluator.Evaluate(BoundProgram!) ?? "null";
+        timer.Stop();
+
+        Console.WriteLine($"Program exited with {result.ToString()} in {timer.ElapsedMilliseconds}ms");
+    }
+
     private static void EmmitCodeToScreen()
     {
         if (IsCompiled && !Diagnostics.Any())
@@ -88,6 +107,7 @@ internal static class Interactive
         Console.WriteLine("compile\t - compile program;");
         Console.WriteLine("syntax\t - print syntax tree;");
         Console.WriteLine("bound\t - print bound tree;");
+        Console.WriteLine("eval\t - Evaluate program;");
         Console.WriteLine("emit\t - print c code;");
         Console.WriteLine("cont\t - continue to edit program;");
         Console.WriteLine("clear\t - clear current program;");
