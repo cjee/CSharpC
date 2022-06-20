@@ -159,7 +159,7 @@ public class Evaluator
                 break;
             case BoundBinaryOperatorKind.Subtraction: {
                  if (left is int a && right is int b)
-                    return a + b;
+                    return a - b;
                 }
                 break;
             case BoundBinaryOperatorKind.Multiplication: {
