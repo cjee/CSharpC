@@ -16,11 +16,11 @@ public class Emitter
         this.writer = writer;
     }
 
-    public void EmitGlobalScope(BoundGlobalScope program)
+    public void EmitGlobalScope(BoundProgram program)
     {
         foreach (var method in program.Methods)
         {
-            string methodSignature = GenerateMethodsignature(method);
+            string methodSignature = GenerateMethodsignature(method.Key);
             writer.WriteLine($"{methodSignature};");
         }
     }
