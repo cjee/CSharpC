@@ -18,7 +18,7 @@ namespace Compiler.CodeAnalysis.Syntax
             do
             {
                 token = lexer.Lex();
-                if (token is not WhitespaceToken)
+                if (token is not (WhitespaceToken or CommentToken))
                     syntaxTokens.Add(token);
             } while (token is not EndOfFileToken);
 

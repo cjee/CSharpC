@@ -43,7 +43,15 @@ internal sealed class Lexer
 
             case '/':
                 position++;
-                return new SlashToken(start);
+                if(Current == '/')
+                {
+                    //FIXME: Comments should be hadled better;
+                    while (Current != '\n')
+                        position++;
+                    return new CommentToken(start, textValue());
+                }
+                else
+                    return new SlashToken(start);
 
             case '%':
                 position++;
