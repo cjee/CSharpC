@@ -140,18 +140,27 @@ public class Emitter
                 break;
 
             case BoundInvocationExpression expression:
-                writer.Write(expression.Method.Name);
-                writer.Write("(");
-                if (expression.Arguments.Count > 0)
+                if(expression.Method.Name == "Write")
                 {
+                    writer.Write($"printf(\"%d\", ");
                     EmitExpression(expression.Arguments[0]);
-                    for (int i = 1; i < expression.Arguments.Count; i++)
-                    {
-                        writer.Write(", ");
-                        EmitExpression(expression.Arguments[i]);
-                    }
+                    writer.Write(")");
                 }
-                writer.Write(")");
+                else
+                {
+                    writer.Write(expression.Method.Name);
+                    writer.Write("(");
+                    if (expression.Arguments.Count > 0)
+                    {
+                        EmitExpression(expression.Arguments[0]);
+                        for (int i = 1; i < expression.Arguments.Count; i++)
+                        {
+                            writer.Write(", ");
+                            EmitExpression(expression.Arguments[i]);
+                        }
+                    }
+                    writer.Write(")");
+                }
                 break;
 
             case BoundUnaryExpression expression:
