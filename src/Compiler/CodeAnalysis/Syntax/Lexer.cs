@@ -207,6 +207,7 @@ internal sealed class Lexer
             "false" => new FalseKeyword(start),
             "void" => new VoidKeyword(start),
             "bool" => new BoolKeyword(start),
+            "char" => new CharKeyword(start),
             "int" => new IntKeyword(start),
             "return" => new ReturnKeyword(start),
             _ => new Identifier(start, text, text),

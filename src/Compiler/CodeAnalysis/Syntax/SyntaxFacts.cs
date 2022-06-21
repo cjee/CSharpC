@@ -28,6 +28,7 @@ public static class SyntaxFacts
     public const string TrueKeywordString = "true";
     public const string VoidKeywordString = "void";
     public const string BoolKeywordString = "bool";
+    public const string CharKeywordString = "char";
     public const string IntKeywordString = "int";
     public const string ReturnKeywordString = "return";
 
@@ -96,6 +97,7 @@ public static class SyntaxFacts
             VoidKeyword => true,
             BoolKeyword => true,
             IntKeyword => true,
+            CharKeyword => true,
             _ => false,
         };
     }
