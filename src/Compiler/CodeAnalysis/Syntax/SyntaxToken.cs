@@ -18,6 +18,7 @@ public sealed record BadToken(int Position, string Text) : SyntaxToken(Position,
 public sealed record EndOfFileToken(int Position) : SyntaxToken(Position, SyntaxFacts.EndOfFileTokenString, null) { public EndOfFileToken() : this(default(int)) { } }
 public sealed record WhitespaceToken(int Position, string Text) : SyntaxToken(Position, Text, null) { public WhitespaceToken() : this(default(int), string.Empty) { } }
 public sealed record CommentToken(int Position, string Text) : SyntaxToken(Position, Text, null) { public CommentToken() : this(default(int), string.Empty) { } }
+public sealed record CharacterLiteralToken(int Position, string Text, object? Value) : SyntaxToken(Position, Text, Value) { public CharacterLiteralToken() : this(default(int), string.Empty, null) { } }
 public sealed record IntegerLiteralToken(int Position, string Text, object? Value) : SyntaxToken(Position, Text, Value) { public IntegerLiteralToken() : this(default(int), string.Empty, null) { } }
 public sealed record PlusToken(int Position) : SyntaxToken(Position, SyntaxFacts.PlusTokenString, null) { public PlusToken() : this(default(int)) { } }
 public sealed record MinusToken(int Position) : SyntaxToken(Position, SyntaxFacts.MinusTokenString, null) { public MinusToken() : this(default(int)) { } }

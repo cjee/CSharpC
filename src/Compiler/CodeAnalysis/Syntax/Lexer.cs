@@ -129,6 +129,14 @@ internal sealed class Lexer
                 position++;
                 return new CommaToken(start);
 
+            case '\'':
+                position++;
+                while(Current != '\'' && Current != ';' && Current != '\n') //FIXME: Better cutof handling for non terminated char sequences
+                    position++;
+
+                position++;
+                return new CharacterLiteralToken(start, textValue(), textValue());
+                
             case '0':
             case '1':
             case '2':
