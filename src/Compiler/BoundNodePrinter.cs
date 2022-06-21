@@ -71,6 +71,10 @@ public static class BoundNodePrinter
                 writer.WriteBooleanLiteralExpression((BoundBooleanLiteralExpression)node);
                 break;
 
+            case BoundCharacterLiteralExpression expression:
+                writer.WriteCharacterLiteralExpression(expression);
+                break;
+
             case BoundBlockStatement:
                 writer.WriteBlockStatement((BoundBlockStatement)node);
                 break;
@@ -222,6 +226,12 @@ public static class BoundNodePrinter
         writer.WriteString(node.Value ? "true" : "false", boolColor);
     }
 
+    private static void WriteCharacterLiteralExpression(this IndentedTextWriter writer,
+        BoundCharacterLiteralExpression node)
+    {
+        writer.WriteString($"'{node.Value}'", textColor);
+    }
+
     private static void WriteNestedExpression(this IndentedTextWriter writer, BoundExpression expression,
         int parentPrecedence)
     {
@@ -273,4 +283,5 @@ public static class BoundNodePrinter
     private static ConsoleColor localColor = ConsoleColor.Blue;
     private static ConsoleColor integerColor = ConsoleColor.Green;
     private static ConsoleColor keywordColor = ConsoleColor.Magenta;
+    private static ConsoleColor textColor = ConsoleColor.DarkMagenta;
 }
