@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Compiler.CodeAnalysis.Syntax;
 
 internal sealed class Lexer
@@ -131,12 +133,36 @@ internal sealed class Lexer
 
             case '\'':
                 position++;
-                while(Current != '\'' && Current != ';' && Current != '\n') //FIXME: Better cutof handling for non terminated char sequences
-                    position++;
+                var sb = new StringBuilder();
+                var done = false;
+                while(!done)
+                {
+                    switch(Current)
+                    {
+                        case '\0':
+                        case '\r':
+                        case '\n':
+                            diagnostics.ReportUnterminatedCharacter(start);
+                            done = true;
+                            break;
+                        case '\'':
+                            position++;
+                            done = true;
+                            break;
+                        default:
+                            sb.Append(Current);
+                            position++;
+                            break;
+                    }
+                }
 
-                position++;
-                return new CharacterLiteralToken(start, textValue(), textValue());
-                
+                var text = sb.ToString();
+                if(char.TryParse(text, out var ch))
+                {
+                    return new CharacterLiteralToken(start, textValue(), ch);
+                }
+                Diagnostics.ReportNotValidCharacter(start+1, text);
+                return new BadToken(start, textValue());
             case '0':
             case '1':
             case '2':

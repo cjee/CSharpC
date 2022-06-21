@@ -39,6 +39,20 @@ namespace Compiler.CodeAnalysis
             Report(span, message);
         }
 
+        public void ReportUnterminatedCharacter(int start)
+        {
+            var span = new TextSpan(start, 1);
+            var message = "Unterminated character";
+            Report(span, message);
+        }
+
+        public void ReportNotValidCharacter(int start, string text)
+        {
+            var span = new TextSpan(start, 1);
+            var message = $"'{text}' is not valid character";
+            Report(span, message);
+        }
+
         public void ReportUnexpectedToken(TextSpan span, System.Type currentKind, System.Type expected)
         {
             var message = $"Unexpected token <{currentKind.Name}>, expected <{expected.Name}>";
