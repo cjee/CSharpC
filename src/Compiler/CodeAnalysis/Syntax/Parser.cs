@@ -338,7 +338,8 @@ namespace Compiler.CodeAnalysis.Syntax
                     var close = MatchToken<CloseParenthesisToken>();
                     return new ParenthesizedExpressionSyntax(open, expression, close);
                 }
-                
+                case CharacterLiteralToken:
+                    return new CharacterLiteralExpressionSyntax(NextToken());
                 case FalseKeyword or TrueKeyword:
                     return new BooleanLiteralExpressionSyntax(NextToken());
                 case IntegerLiteralToken:

@@ -12,6 +12,7 @@ public sealed record InvocationExpressionSyntax(
         SyntaxToken CloseParenthesis) : ExpressionSyntax;
 
 public sealed record NumericLiteralExpressionSyntax(SyntaxToken NumberToken) : ExpressionSyntax;
+public sealed record CharacterLiteralExpressionSyntax(SyntaxToken CharacterToken) : ExpressionSyntax;
 public sealed record ParenthesizedExpressionSyntax(SyntaxToken OpenParenthesis, ExpressionSyntax Expression, SyntaxToken CloseParenthesis) : ExpressionSyntax;
 public sealed record SimpleNameExpressionSyntax(SyntaxToken Identifier) : ExpressionSyntax;
 public sealed record UnaryExpressionSyntax(SyntaxToken OperatorToken, ExpressionSyntax Operand) : ExpressionSyntax;
