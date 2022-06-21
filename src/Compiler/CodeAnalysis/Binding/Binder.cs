@@ -280,6 +280,7 @@ namespace Compiler.CodeAnalysis.Binding
             }
 
             var name = nameSyntax.Identifier.Text;
+            bool isBuiltIn = name == "Write"; // We want ignore type checking for built in methods for now
 
             var boundArguments = ImmutableList.CreateBuilder<BoundExpression>();
             foreach (var argument in syntax.Arguments)
@@ -300,19 +301,20 @@ namespace Compiler.CodeAnalysis.Binding
                 Diagnostics.ReportArgumentCountMismatch(nameSyntax.Identifier, method.Parameters.Count, syntax.Arguments.Count);
                 return new BoundErrorExpression();
             }
-
-            for (var i = 0; i < syntax.Arguments.Count; i++)
+            if(!isBuiltIn)
             {
-                var argument = boundArguments[i];
-                var parameter = method.Parameters[i];
-                if (argument.Type != parameter.Type)
+                for (var i = 0; i < syntax.Arguments.Count; i++)
                 {
-                    diagnostics.ReportWrongArgumentType(syntax.Arguments[i].Span, parameter.Name, parameter.Type,
-                        argument.Type);
-                    return new BoundErrorExpression();
+                    var argument = boundArguments[i];
+                    var parameter = method.Parameters[i];
+                    if (argument.Type != parameter.Type)
+                    {
+                        diagnostics.ReportWrongArgumentType(syntax.Arguments[i].Span, parameter.Name, parameter.Type,
+                            argument.Type);
+                        return new BoundErrorExpression();
+                    }
                 }
             }
-
 
             return new BoundInvocationExpression(method, boundArguments.ToImmutable());
         }
@@ -388,12 +390,9 @@ namespace Compiler.CodeAnalysis.Binding
 
         private BoundExpression BindCharacterLiteralExpression(CharacterLiteralExpressionSyntax syntax)
         {
-            if(syntax.CharacterToken.Value is string str)
+            if(syntax.CharacterToken.Value is char ch)
             {
-                if (char.TryParse(str, out var value))
-                {
-                    return new BoundCharacterLiteralExpression(value);
-                }
+                    return new BoundCharacterLiteralExpression(ch);
             }
             return new BoundCharacterLiteralExpression('\0');
         }
