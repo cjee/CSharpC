@@ -87,6 +87,8 @@ public class Evaluator
                 return EvaluateBinaryExpression(binaryExpression);
             case BoundBooleanLiteralExpression boundBooleanLiteral:
                 return boundBooleanLiteral.Value;
+            case BoundCharacterLiteralExpression boundCharacterLiteralExpression:
+                return boundCharacterLiteralExpression.Value;
             case BoundErrorExpression:
                 throw new Exception("Trying to execute Bound Error exception");
             case BoundIntegralLiteralExpression integralLiteralExpression:
