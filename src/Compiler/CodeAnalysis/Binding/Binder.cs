@@ -248,6 +248,8 @@ namespace Compiler.CodeAnalysis.Binding
         {
             switch (expressionSyntax)
             {
+                case CharacterLiteralExpressionSyntax syntax:
+                    return BindCharacterLiteralExpression(syntax);
                 case NumericLiteralExpressionSyntax syntax:
                     return BindNumericLiteralExpression(syntax);
                 case BooleanLiteralExpressionSyntax syntax:
@@ -382,6 +384,18 @@ namespace Compiler.CodeAnalysis.Binding
                 return boundOperand;
             }
             return new BoundUnaryExpression(boundOperator, boundOperand);
+        }
+
+        private BoundExpression BindCharacterLiteralExpression(CharacterLiteralExpressionSyntax syntax)
+        {
+            if(syntax.CharacterToken.Value is string str)
+            {
+                if (char.TryParse(str, out var value))
+                {
+                    return new BoundCharacterLiteralExpression(value);
+                }
+            }
+            return new BoundCharacterLiteralExpression('\0');
         }
 
         private BoundExpression BindNumericLiteralExpression(NumericLiteralExpressionSyntax numericLiteralExpressionSyntax)

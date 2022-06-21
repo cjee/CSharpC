@@ -27,6 +27,10 @@ public sealed record BoundIntegralLiteralExpression(int Value) : BoundExpression
 {
     public override TypeSymbol Type => TypeSymbols.Int;
 }
+public sealed record BoundCharacterLiteralExpression(char Value) : BoundExpression
+{
+    public override TypeSymbol Type => TypeSymbols.Char;
+}
 public sealed record BoundInvocationExpression(MethodSymbol Method, ImmutableList<BoundExpression> Arguments) : BoundExpression
 {
     public override TypeSymbol Type => Method.Type;
