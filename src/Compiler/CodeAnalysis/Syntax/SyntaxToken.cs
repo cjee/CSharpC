@@ -49,6 +49,8 @@ public sealed record BoolKeyword(int Position) : SyntaxToken(Position, SyntaxFac
 public sealed record IntKeyword(int Position) : SyntaxToken(Position, SyntaxFacts.IntKeywordString, null) { public IntKeyword() : this(default(int)) { } }
 public sealed record CharKeyword(int Position) : SyntaxToken(Position, SyntaxFacts.CharKeywordString, null) { public CharKeyword() : this(default(int)) { } }
 public sealed record ReturnKeyword(int Position) : SyntaxToken(Position, SyntaxFacts.ReturnKeywordString, null) { public ReturnKeyword() : this(default(int)) { } }
+public sealed record IfKeyword(int Position) : SyntaxToken(Position, SyntaxFacts.IfKeywordString, null) { public IfKeyword() : this(default(int)) { } }
+public sealed record ElseKeyword(int Position) : SyntaxToken(Position, SyntaxFacts.ElseKeywordString, null) { public ElseKeyword() : this(default(int)) { } }
 
 public sealed record Identifier(int Position, string Text, object? Value) : SyntaxToken(Position, Text, Value) { public Identifier() : this(default(int), string.Empty, null) { } }
 public sealed record Type(int Position, string Text, object? Value) : SyntaxToken(Position, Text, Value) { public Type() : this(default(int), string.Empty, null) { } }

@@ -210,6 +210,8 @@ internal sealed class Lexer
             "char" => new CharKeyword(start),
             "int" => new IntKeyword(start),
             "return" => new ReturnKeyword(start),
+            SyntaxFacts.IfKeywordString => new IfKeyword(start),
+            SyntaxFacts.ElseKeywordString => new ElseKeyword(start),
             _ => new Identifier(start, text, text),
         };
 

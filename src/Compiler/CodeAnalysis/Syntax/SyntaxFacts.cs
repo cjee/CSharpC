@@ -31,7 +31,9 @@ public static class SyntaxFacts
     public const string CharKeywordString = "char";
     public const string IntKeywordString = "int";
     public const string ReturnKeywordString = "return";
-    
+    public const string IfKeywordString = "if";
+    public const string ElseKeywordString = "else";
+
     public static int GetUnaryOperatorPrecedence(this string syntaxText)
     {
         switch (syntaxText)
