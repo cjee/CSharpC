@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using Compiler.CodeAnalysis.FlowAnalysis;
 using Compiler.CodeAnalysis.Symbols;
 using Compiler.CodeAnalysis.Syntax;
 
@@ -71,8 +72,11 @@ namespace Compiler.CodeAnalysis.Binding
                 diagnostics.AddRange(binder.diagnostics);
                 
                 // no flow logic hence this is enough for now
-                if (method.Type != TypeSymbols.Void && body.Statements.OfType<BoundReturnStatement>().Count() == 0)
-                    diagnostics.ReportNoReturnStatement(method.Declaration.MemberName);
+                if (method.Type != TypeSymbols.Void)
+                {
+                    if(! ReturnAnalysis.BaundStatementReturns(body))
+                        diagnostics.ReportNoReturnStatement(method.Declaration.MemberName);
+                }
             }
 
             return new BoundProgram(diagnostics, methodBodies.ToImmutable());
