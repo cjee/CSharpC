@@ -36,6 +36,9 @@ public class Emitter
         if (type == TypeSymbols.Void)
             return "void";
 
+        if (type == TypeSymbols.Char)
+            return "char";
+
         throw new Exception($"Trying to emit unknown type {type.Name}");
     }
 
@@ -139,12 +142,21 @@ public class Emitter
                 writer.Write(expression.Value.ToString());
                 break;
 
+            case BoundCharacterLiteralExpression expression:
+                writer.Write($"'{expression.Value}'");
+                break;
             case BoundInvocationExpression expression:
                 if(expression.Method.Name == "Write")
                 {
-                    writer.Write($"printf(\"%d\", ");
-                    EmitExpression(expression.Arguments[0]);
-                    writer.Write(")");
+                    switch(expression.Arguments[0])
+                    {
+                        case BoundIntegralLiteralExpression arg:
+                            writer.Write($"printf(\"{arg.Value}\")");
+                            break;
+                        case BoundCharacterLiteralExpression arg:
+                            writer.Write($"printf(\"{arg.Value}\")");
+                            break;
+                    }
                 }
                 else
                 {
