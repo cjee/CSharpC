@@ -240,6 +240,7 @@ namespace Compiler.CodeAnalysis.Binding
                 "bool" => TypeSymbols.Boolean,
                 "int" => TypeSymbols.Int,
                 "void" => TypeSymbols.Void,
+                "char" => TypeSymbols.Char,
                 _ => TypeSymbols.Error
             };
         }
