@@ -111,6 +111,9 @@ public static class BoundNodePrinter
                 writer.WriteReturnStatement((BoundReturnStatement)node);
                 break;
 
+            case BoundIfStatement ifStatement:
+                writer.WriteIfStatement(ifStatement);
+                break;
             default:
                 throw new Exception($"Unrecognized bound node type: {node.GetType().Name}");
         }
@@ -123,6 +126,24 @@ public static class BoundNodePrinter
         if (node.BoundExpression is not null)
             writer.WriteNode(node.BoundExpression);
         writer.WriteLine();
+    }
+
+    private static void WriteIfStatement(this IndentedTextWriter writer, BoundIfStatement node)
+    {
+        writer.WriteString(SyntaxFacts.IfKeywordString, keywordColor);
+        writer.WriteSpace();
+        writer.WriteString(SyntaxFacts.OpenParenthesisTokenString, ConsoleColor.White);
+        writer.WriteNode(node.condition);
+        writer.WriteString(SyntaxFacts.CloseBraceTokenString, ConsoleColor.White);
+        writer.WriteSpace();
+        writer.WriteNode(node.TrueBlock);
+
+        if(node.falseBlock is not null)
+        {
+            writer.WriteString(SyntaxFacts.ElseKeywordString, keywordColor);
+            writer.WriteSpace();
+            writer.WriteNode(node.falseBlock);
+        }
     }
 
     private static void WriteInvocationExpression(this IndentedTextWriter writer, BoundInvocationExpression node)

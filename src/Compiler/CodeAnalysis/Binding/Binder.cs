@@ -103,6 +103,7 @@ namespace Compiler.CodeAnalysis.Binding
                 ExpressionStatementSyntax => BindExpressionStatement((ExpressionStatementSyntax)syntax),
                 ReturnStatementSyntax => BindReturnStatement((ReturnStatementSyntax)syntax),
                 EmptyStatementSyntax => new BoundEmptyStatement(),
+                IfStatementSyntax ifStatement => BindIfStatement(ifStatement),
                 _ => throw new Exception($"Unexpected syntax {syntax.NodeName}"),
             };
         }
@@ -135,6 +136,23 @@ namespace Compiler.CodeAnalysis.Binding
             }
 
             return new BoundReturnStatement(boundExpression);
+        }
+
+        private BoundStatment BindIfStatement(IfStatementSyntax ifStatement)
+        {
+            var expression = BindExpression(ifStatement.Expression);
+            if(expression.Type != TypeSymbols.Boolean)
+            {
+                diagnostics.ReportCannotAssignType(ifStatement.Expression, TypeSymbols.Boolean, expression.Type);
+                expression = new BoundErrorExpression();
+            }
+
+            var trueBlock = BindStatement(ifStatement.TrueStatement);
+            BoundStatment? falseBlock = null;
+            if(ifStatement.FalseStatement is not null)
+                falseBlock = BindStatement(ifStatement.FalseStatement);
+
+            return new BoundIfStatement(expression, trueBlock, falseBlock);
         }
 
         private BoundStatment BindExpressionStatement(ExpressionStatementSyntax syntax)

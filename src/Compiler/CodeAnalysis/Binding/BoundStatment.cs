@@ -10,3 +10,4 @@ public sealed record BoundEmptyStatement : BoundStatment;
 public sealed record BoundExpressionStatement(BoundExpression Expression) : BoundStatment;
 public sealed record BoundLocalVariableDeclarationStatement(VariableSymbol Variable, BoundExpression? Initializer) : BoundStatment;
 public sealed record BoundReturnStatement(BoundExpression? BoundExpression) : BoundStatment;
+public sealed record BoundIfStatement(BoundExpression condition, BoundStatment TrueBlock, BoundStatment? falseBlock ) : BoundStatment;
