@@ -170,12 +170,19 @@ namespace Compiler.CodeAnalysis.Syntax
 
         private StatementSyntax ParseStatement()
         {
+            if (IsTypeSyntax())
+                return ParseDeclarationStatement();
+            return ParseEmbeddedStatement();
+        }
+
+        private StatementSyntax ParseEmbeddedStatement()
+        {
             if (Current is OpenBraceToken)
                 return ParseStatementBlock();
             if (Current is SemicolonToken)
                 return new EmptyStatementSyntax(NextToken());
-            if (IsTypeSyntax())
-                return ParseDeclarationStatement();
+            if(Current is IfKeyword)
+                return ParseIfStatement();
             if (Current is ReturnKeyword)
                 return ParseReturnStatement();
             return ParseExpressionStatement();
@@ -196,6 +203,26 @@ namespace Compiler.CodeAnalysis.Syntax
             var semicolon = MatchToken<SemicolonToken>();
             return new ReturnStatementSyntax(returnKeyword, expression, semicolon);
         }
+
+        private StatementSyntax ParseIfStatement()
+        {
+            var ifToken = NextToken();
+            var openParenthesis = MatchToken<OpenParenthesisToken>();
+            var expression = ParseAssignmentExpression();
+            var closeParenthesis = MatchToken<CloseParenthesisToken>();
+            var trueStatement = ParseEmbeddedStatement();
+            SyntaxToken? elseToken = null;
+            StatementSyntax? falseStatement = null;
+
+            if(Current is ElseKeyword)
+            {
+                elseToken = NextToken();
+                falseStatement = ParseEmbeddedStatement();
+            }
+
+            return new IfStatementSyntax(ifToken, openParenthesis, expression, closeParenthesis, trueStatement, elseToken, falseStatement);
+        }
+
 
         private StatementSyntax ParseExpressionStatement()
         {

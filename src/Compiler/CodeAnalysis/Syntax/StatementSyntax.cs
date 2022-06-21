@@ -22,3 +22,12 @@ public sealed record MethodDeclarationSyntax(
 
 public sealed record ParameterSyntax(TypeSyntax Type, SyntaxToken Identifier) : SyntaxNode;
 public sealed record ReturnStatementSyntax(SyntaxToken ReturnKeyword, ExpressionSyntax? Expression, SyntaxToken Semicolon) : StatementSyntax;
+public sealed record IfStatementSyntax(
+        SyntaxToken IfKeyword, 
+        SyntaxToken OpenParenthesis, 
+        ExpressionSyntax Expression, 
+        SyntaxToken CloseParenthesis,
+        StatementSyntax TrueStatement,
+        SyntaxToken? ElseKeyword,
+        StatementSyntax? FalseStatement
+) : StatementSyntax;
