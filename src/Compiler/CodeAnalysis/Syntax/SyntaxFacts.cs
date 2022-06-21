@@ -31,21 +31,7 @@ public static class SyntaxFacts
     public const string CharKeywordString = "char";
     public const string IntKeywordString = "int";
     public const string ReturnKeywordString = "return";
-
-    public static System.Type GetKeywordTokenType(string text)
-    {
-        return text switch
-        {
-            "true" => typeof(TrueKeyword),
-            "false" => typeof(FalseKeyword),
-            "void" => typeof(VoidKeyword),
-            "bool" => typeof(BoolKeyword),
-            "int" => typeof(IntKeyword),
-            "return" => typeof(ReturnKeyword),
-            _ => typeof(Identifier),
-        };
-    }
-
+    
     public static int GetUnaryOperatorPrecedence(this string syntaxText)
     {
         switch (syntaxText)
